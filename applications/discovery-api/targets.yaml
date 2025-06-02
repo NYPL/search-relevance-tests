@@ -1,0 +1,389 @@
+---
+q: "A Reader's Guide to Hart Craine's White Buildings"
+search_scope: "all"
+metric: "precision"
+metric_at: 3
+relevant:
+  - "b11785956"
+  - "pb998308253506421"
+notes:
+  - "Misspelling of 'Crane' for 'Craine' "
+  - "@3 ensures we find them all. Fragile though"
+reason: "initial target"
+---
+q: "A Reader's Guide to Hart Craine's White Buildings"
+search_scope: "all"
+metric: "precision"
+metric_at: 1
+relevant:
+  - "b11785956"
+notes:
+  - "Misspelling of 'Crane' for 'Craine' "
+  - "Like previous but maybe better, ensures the NYPL record the top hit"
+reason: "initial target"
+---
+q: "candide"
+search_scope: "all"
+metric: "recall"
+metric_at: 10
+relevant:
+  - "b10690141"
+  - "b10780034"
+  - "b14000114"
+  - "cb620952"
+  - "cb5834647"
+  - "cb10171120"
+  - "cb11607983"
+  - "b11785903"
+  - "b16593688"
+  - "b16600011"
+notes:
+  - "Current results, but there might be better Candides"
+  - "Ensures similar terms ('candid', 'candidate') don't dominate"
+reason: "initial target"
+---
+q: "liberator"
+search_scope: "all"
+metric: "recall"
+metric_at: 25
+relevant:
+  - "b12316212"
+  - "b13204619"
+notes:
+  - "There is probably a fuller list"
+reason: "initial target"
+---
+q: "time magazine"
+search_scope: "journal_title"
+metric: "recall"
+metric_at: 50
+relevant:
+  - "b10682828"
+  - "b17394425"
+  - "b21462251"
+  - "b16542771"
+notes:
+  - "Results aren't great because 'magazine' throws it off"
+  - "Something we want to track and improve"
+reason: "initial target"
+---
+q: "time"
+search_scope: "journal_title"
+metric: "recall"
+metric_at: 50
+relevant:
+  - "b10682828"
+  - "b17394425"
+  - "b21462251"
+  - "b16542771"
+notes:
+  - "Should be better thab 'time magazine'"
+reason: "initial target"
+---
+q: "sassy"
+search_scope: "all"
+metric: "recall"
+metric_at: 50
+relevant:
+  - "b11612329"
+notes:
+  - "Should be better than 'sassy magazine'"
+reason: "initial target"
+---
+q: "letter from tombs prison"
+search_scope: "title"
+metric: "recall"
+metric_at: 10
+relevant:
+  - "b11782546"
+  - "pb9938471653506421"
+  - "cb2080258"
+notes:
+  - "Title is 'Letter from the Tombs' and the addition of 'prison' throws it off"
+reason: "initial target"
+---
+q: "letter from the tombs"
+search_scope: "title"
+metric: "precision"
+metric_at: 1
+relevant:
+  - "b11782546"
+notes:
+  - "Should be better than 'letter from tombs prison'"
+reason: "initial target"
+---
+q: "gold, leonard"
+search_scope: "contributor"
+metric: "precision"
+metric_at: 2
+relevant:
+  - "b10002582"
+  - "b14650132"
+reason: "initial target"
+---
+q: "alexander, victor"
+search_scope: "contributor"
+metric: "recall"
+metric_at: 50
+relevant:
+  - "b16476737"
+  - "b13998639"
+  - "hb990031177450203941"
+  - "cb2235121"
+reason: "initial target"
+---
+q: "journal of jewish studies"
+search_scope: "journal_title"
+metric: "precision"
+metric_at: 1
+relevant:
+  - "b11151367"
+reason: "initial target"
+---
+q: "East and West"
+search_scope: "journal_title"
+metric: "recall"
+metric_at: 50
+relevant:
+  - "b11378929" 
+  - "b10988853"
+  - "b21433970"
+  - "b15276563"
+  - "b15087757"
+  - "b15088556"
+reason: "initial target"
+---
+q: "a man's a man"
+search_scope: "title"
+metric: "precision"
+metric_at: 3
+relevant:
+  - "b12411226"
+  - "b16761751"
+  - "b20009609"  
+reason: "initial target"
+---
+q: "beginnings of jewishness"
+search_scope: "title"
+metric: "precision"
+metric_at: 2
+relevant:
+  - "b15264124"
+  - "cb2167369"
+reason: "initial target"
+notes:
+  - "We would like to see the NYPL copy first"
+---
+q: "a mom's life"
+search_scope: "title"
+metric: "recall"
+metric_at: 4
+relevant:
+  - "b16556599"
+  - "b19927929"
+  - "b16542290"
+  - "b16649091"
+reason: "initial target"
+---
+q: "new york times"
+search_scope: "all"
+metric: "recall"
+metric_at: 50
+relevant:
+  - "pb626684"
+  - "b12639440"
+  - "b21835201"
+  - "b12403270"
+  - "b21941401"
+  - "cb524908"
+  - "b21148115"
+  - "b21168678"
+  - "b21148447"
+  - "b11801637"
+  - "b21148114"
+reason: "initial target"
+---
+q: "wired"
+search_scope: "all"
+metric: "recall"
+metric_at: 10
+relevant:
+  - "b22965079"
+  - "b22214385"
+  - "b21937839"
+  - "b17218096"
+  - "b22160964"
+  - "pb999474273506421"
+  - "b11686313"
+  - "b11514515"
+  - "b21884998"
+reason: "initial target"
+---
+q: "\u0022In memory of memory\u0022"
+search_scope: "title"
+metric: "precision"
+metric_at: 1
+relevant:
+  - "b22405724"
+reason: "initial target"
+notes:
+  - "Search with quotes"
+---
+q: "\u0022in cold blood\u0022"
+search_scope: "title"
+metric: "precision"
+metric_at: 2
+relevant:
+  - "b11064010"
+  - "b21582147"  
+reason: "initial target"
+notes:
+  - "Search with quotes"
+---
+q: "the shroud of christ"
+search_scope: "title"
+metric: "precision"
+metric_at: 4
+relevant:
+  - "b11095468"
+  - "cb4692334"
+  - "pb1267391"
+  - "b23193131"
+reason: "initial target"
+notes:
+  - "Search with quotes"
+---
+q: "kosovsky otsar ha-leshon"
+search_scope: "all"
+metric: "recall"
+metric_at: 10
+relevant:
+  - "b14258861"
+  - "b14258864"
+  - "b11904261"
+  - "b14197265"
+reason: "initial target"
+notes:
+  - "Prioritize onsite"
+---
+q: "encyclopedia of jewish diaspora"
+search_scope: "all"
+metric: "precision"
+metric_at: 1
+relevant:
+  - "b22180471"
+reason: "initial target"
+notes:
+  - "Prioritize onsite"
+---
+q: "33433135877482"
+search_scope: "all"
+metric: "precision"
+metric_at: 1
+relevant:
+  - "b22935532"
+reason: "initial target"
+notes:
+  - "Exact barcode"
+---
+q: "Vinipeg"
+search_scope: "all"
+metric: "precision"
+metric_at: 4
+relevant:
+  - "b13959162"
+  - "b16422751"
+  - "b11448009"
+  - "cb2859634"
+reason: "initial target"
+---
+q: "JFD 16-5143"
+search_scope: "all"
+metric: "precision"
+metric_at: 1
+relevant:
+  - "b21099627"
+reason: "initial target"
+---
+q: "\u0022center of life\u0022"
+search_scope: "all"
+metric: "precision"
+metric_at: 2
+relevant:
+  - "cb4793271"
+  - "cb270248"  
+reason: "initial target"
+---
+q: "Peribáñez y el comendador de Ocaña"
+search_scope: "all"
+metric: "precision"
+metric_at: 6
+relevant:
+  - "b15578492"
+  - "b10853092"
+  - "b11361733"
+  - "b13439547"
+  - "b11041128"
+  - "b13266844"
+reason: "initial target"
+---
+q: "the power broker"
+search_scope: "all"
+metric: "recall"
+metric_at: 5
+relevant:
+  - "b10311633"
+  - "b21586756"
+  - "cb202556"
+notes:
+  - "Note to self: maybe the is a good example for using Recall. There are other books called 'The Power Broker' and we want to be sure that all the Caro books (3) are at least in the top 5"
+reason: "initial target"
+---
+q: "\u0022the power broker\u0022"
+search_scope: "all"
+metric: "recall"
+metric_at: 5
+relevant:
+  - "b10311633"
+  - "b21586756"
+  - "cb202556"
+reason: "initial target"
+---
+q: '*PT'
+search_scope: 'callnumber'
+metric: 'recall'
+metric_at: 20
+notes:
+ - Callnumber search for "\*PT" expected to match items beginning "\*PT " _before_ items beginning "\*PTK"
+ - From [this ticket](https://nyplprod.service-now.com/now/nav/ui/classic/params/target/u_digital_bug_fix_requests.do%3Fsys_id%3D86df3bc59395a65051ae79c47aba10c3%26sysparm_view%3D%26sysparm_domain%3Dnull%26sysparm_domain_scope%3Dnull)
+relevant:
+ - b10053726
+ - b10676898
+ - b10774048
+ - b11098276
+ - b11311224
+ - b11379341
+ - b11835707
+ - b13289271
+ - b13289613
+ - b13293542
+ - b13293557
+---
+q: 'folkstsaytung varshe'
+search_scope: 'all'
+metric: 'recall'
+metric_at: 20
+relevant:
+ - b16004367
+notes:
+ - 'From DBR0001120: Desire to match on placeOfPublication ("Varshe") and title ("folkstsaytung"), requiring a cross-fields match.'
+---
+q: '"millay" and "sophomore"'
+search_scope: 'all'
+metric: 'recall'
+metric_at: 10
+relevant:
+ - b16415897
+notes:
+ - In lieu of supporting boolean 'and' operator, should probably ignore the 'and'.
+---
