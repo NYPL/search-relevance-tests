@@ -387,3 +387,22 @@ relevant:
 notes:
  - In lieu of supporting boolean 'and' operator, should probably ignore the 'and'.
 ---
+q: 'Descent Into Hell Charles Williams'
+search_scope: 'all'
+metric: 'recall'
+metric_at: 3
+relevant:
+ - b13178591
+ - cb4679843
+notes:
+ - From SN DBR0001144
+---
+q: 'וויניפעג'
+search_scope: 'all'
+metric: 'recall'
+metric_at: 3
+relevant:
+ - b13959162
+notes:
+ - From SN DBR0001107
+---
