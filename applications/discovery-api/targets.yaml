@@ -355,7 +355,7 @@ metric: 'recall'
 metric_at: 20
 notes:
  - Callnumber search for "\*PT" expected to match items beginning "\*PT " _before_ items beginning "\*PTK"
- - From [this ticket](https://nyplprod.service-now.com/now/nav/ui/classic/params/target/u_digital_bug_fix_requests.do%3Fsys_id%3D86df3bc59395a65051ae79c47aba10c3%26sysparm_view%3D%26sysparm_domain%3Dnull%26sysparm_domain_scope%3Dnull)
+ - From SN DBR0001117
 relevant:
  - b10053726
  - b10676898
