@@ -416,7 +416,7 @@ relevant:
 notes:
  - From SN DBR0001144
 ---
-q: 'n Praise of Shadows Tanizaki'
+q: 'In Praise of Shadows Tanizaki'
 search_scope: 'all'
 metric: 'recall'
 metric_at: 3
