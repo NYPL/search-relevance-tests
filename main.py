@@ -3,6 +3,7 @@ import argparse
 import os
 
 from lib.models.report import Report
+from lib.utils import shell_exec
 
 
 def parse_args():
@@ -122,10 +123,12 @@ if len(sys.argv) > 0 and "main.py" in sys.argv[0]:
 
         if args.command == "current":
             run_current(app=args.app, rows=rows, appdir=args.appdir, description=args.description)
+            rebuild_report(app=args.app, persist_to_s3=False, rebuild_graphs=args.rebuild_graphs)
+
+            shell_exec("open", f"/tmp/srt/{args.app}/report/index.html")
         if args.command == "all":
             run_all(app=args.app, rows=rows, rebuild=args.rebuild)
         if args.command == "rebuild-report":
-            print(f"persist? {args.persist_to_s3}")
             rebuild_report(app=args.app, persist_to_s3=args.persist_to_s3, rebuild_graphs=args.rebuild_graphs)
         if args.command == "build":
             build_application_versions(app=args.app)

@@ -55,7 +55,7 @@ To re-run all tests against all registered commits for a named application (for 
 python main.py APPLICATION all [--rows ROWS]
 ```
 
-To run tests for a named, local application (for example to assess changes under development):
+To run tests for a named, local application (for example to assess changes under development) and view the report (without modifying the current official report in S3):
 ```
 python main.py APPLICATION current [--rows ROWS] [--appdir APPDIR]
 ```

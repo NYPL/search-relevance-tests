@@ -151,7 +151,6 @@ class Run:
         }
         call = {"requests": [request], "metric": metric}
 
-        # print(f'Rank eval call: {json.dumps(call)}')
         return call
 
     def initialize_es_client(self):
@@ -235,9 +234,6 @@ class Run:
             deprecated_target_keys = [
                 key for key in previous_target_keys if key not in current_target_keys
             ]
-        # print(f"Run#collect_data: Collecting data for {self.commit_id}")
-        # print(f"  prev keys ({len(previous_target_keys)}) {previous_target_keys}")
-        # print(f"  current keys ({len(current_target_keys)}) {current_target_keys}")
 
         if len(deprecated_target_keys) > 0:
             print(f"  Deprecating targets: {deprecated_target_keys}")
@@ -313,8 +309,6 @@ class Run:
                     doc['relevant'] = True
                 if ind < target.metric_at:
                     doc['within_metric'] = True
-
-            print(f'matching docs: {matching_documents} ({count})')
 
             if response["failures"].get("report") is not None:
                 print(f'Got Error: {response["failures"]}')
