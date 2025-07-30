@@ -16,11 +16,11 @@ def get_from_s3(remote_path, local_path):
     bucket.get(remote_path, local_path)
 
 
-def upload_dir(source_path, prefix, public=False):
+def upload_dir(source_path, prefix, public=False, exclude=[]):
     print(f"Uploading {source_path} to {prefix}")
     bucket = S3BucketWrapper("research-catalog-stats")
     acl = "public-read" if public else "private"
-    bucket.upload_dir_s3(source_path, prefix, acl=acl)
+    bucket.upload_dir_s3(source_path, prefix, acl=acl, exclude=exclude)
 
 
 def download_dir(prefix, local_path):
@@ -106,7 +106,7 @@ class S3BucketWrapper:
                         self.bucket_name, s3_path, full_local_path
                     )
 
-    def upload_dir_s3(self, source_dir, dst_prefix="", acl="private"):
+    def upload_dir_s3(self, source_dir, dst_prefix="", acl="private", exclude=[]):
         # enumerate local files recursively
         for root, dirs, files in os.walk(source_dir):
 
@@ -127,6 +127,8 @@ class S3BucketWrapper:
                         print(
                             f"Skipping uploading {local_path} because unrecognized content-type"
                         )
+                    elif filename in exclude:
+                        print(f"  Skipping uploading {filename}")
                     else:
                         self.client.upload_file(
                             local_path, self.bucket_name, s3_path, ExtraArgs=extra

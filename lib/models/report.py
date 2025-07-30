@@ -49,8 +49,9 @@ class Report:
             ]
         ])
         for path in stale_manifests:
-            print(f"  Removing stale run not found in commits.csv: {path}")
-            os.remove(path)
+            print(f"  Consider removing stale run not found in commits.csv: {path}")
+            # TODO: This was deleting things too aggressively, so disabling for now:
+            # os.remove(path)
 
         for run in self.runs:
             previous_run = None if kwargs.get('rebuild') else self.previous_run_for(run, previous_runs)
@@ -61,7 +62,7 @@ class Report:
         basedir = f"/tmp/srt/{self.app}/manifests"
         [run.save_manifest(basedir) for run in self.runs]
 
-        upload_dir(basedir, f"srt/{self.app}/manifests")
+        upload_dir(basedir, f"srt/{self.app}/manifests", exclude=["current.json"])
 
     def add_registered_runs(self):
         path = f"./applications/{self.app}/commits.csv"
