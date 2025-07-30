@@ -172,7 +172,6 @@ class Run:
         else:
             self.es_config = load_config(self.base_dir, app=self.report.app)
 
-        print(f"  Loaded es config: {self.es_config}")
         set_es_config(self.es_config)
 
     def initialize_app(self, use_cache=True, commit_id=None):
@@ -347,16 +346,18 @@ class Run:
         )
 
         print(f"  Saving manifest for {self.commit_id}")
-        # print(f"JSON: {serialization}")
-        file_key = "current" if self.explicit_base_dir else self.commit_id
 
         os.makedirs(basedir, exist_ok=True)
 
-        filename = f"{file_key}.json"
-        path = os.path.join(basedir, filename)
+        path = self.manifest_file_path(basedir)
         with open(path, "w") as f:
             f.write(serialization)
         print(f"  Wrote to {path}")
+
+    def manifest_file_path(self, basedir):
+        file_key = "current" if self.explicit_base_dir else self.commit_id
+        filename = f"{file_key}.json"
+        return os.path.join(basedir, filename)
 
     @staticmethod
     def for_commit(report, commit, description=""):

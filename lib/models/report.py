@@ -41,6 +41,17 @@ class Report:
     def collect_data(self, **kwargs):
         previous_runs = self.load_runs_from_manifests()
 
+        basedir = f"/tmp/srt/{self.app}/manifests"
+        stale_manifests = set([
+            run.manifest_file_path(basedir) for run in previous_runs
+            if run.commit_id not in [
+                r.commit_id for r in self.runs
+            ]
+        ])
+        for path in stale_manifests:
+            print(f"  Removing stale run not found in commits.csv: {path}")
+            os.remove(path)
+
         for run in self.runs:
             previous_run = None if kwargs.get('rebuild') else self.previous_run_for(run, previous_runs)
             run.collect_data(previous_run)
@@ -53,7 +64,6 @@ class Report:
         upload_dir(basedir, f"srt/{self.app}/manifests")
 
     def add_registered_runs(self):
-        # path = local_application_file(self.app, 'commits.csv')
         path = f"./applications/{self.app}/commits.csv"
 
         official_commit_runs = []
