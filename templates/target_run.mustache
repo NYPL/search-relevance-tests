@@ -1,0 +1,34 @@
+<div class="collapsible-heading">
+  <textarea id="{{queryId}}">{{JSON.stringify(test.query, null, 2)}}</textarea>
+  {{#run.change_url}}
+    <a href="{{run.change_url}}" target="_blank">{{run.app_version}}</a>: 
+  {{/run.change_url}}
+  {{^run.change_url}}
+    {{run.app_version}}
+  {{/run.change_url}}
+
+  {{!
+    // FIXME: This isn't ready for prime time:
+    // ` (<a href="javascript:void(copyQueryToClipboard('${queryId}'))" title="Copy query to clipboard" class="copy-to-clipboard">ES query</a>) `,
+  }}
+
+  {{run.commit_date_formatted}}: {{run.commit_description}}:
+   | <span class="score">score {{metric_score_formatted}}</span>
+   | <span class="elapsed">{{elapsed}}ms elapsed</span>
+  Found {{found}} of {{target.relevant_length}} in {{count}} total hits.
+</div>
+
+<div class="collapsible-content">
+  <p>
+    Hits:
+    <ol>
+    {{#matching_documents}}
+      <li{{#within_metric}} class="within-metric"{{/within_metric}} id="ind-{{ind}}">
+        <span class="hit-found-icon">
+          {{#relevant}}☑ {{/relevant}}
+        </span>
+        <a href="https://www.nypl.org/research/research-catalog/bib/{{_id}}">{{_id}}: {{_source.title}}{{#_source.creatorLiteral}} ({{_source.creatorLiteral}}){{/_source.creatorLiteral}}</a></li>
+    {{/matching_documents}}
+    </ol>
+  </p>
+</div>

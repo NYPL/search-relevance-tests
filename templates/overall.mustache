@@ -1,0 +1,40 @@
+<h2>0. Overall</h2>
+
+<p>This shows average performance over all queries for each app version.
+
+<h3>App versions</h3>
+
+<img src="./graphs/overall.png?report_id={{report_id}}" />
+
+<ul class="runs-summary">
+
+{{#run_summary}}
+
+  <li>
+    {{#run.change_url}}
+      <a href="{{run.change_url}}" target="_blank">{{run.app_version}}</a>: 
+    {{/run.change_url}}
+    {{^run.change_url}}
+      {{run.app_version}}
+    {{/run.change_url}}
+
+    {{run.commit_date_formatted}}:
+    {{run.commit_description}} 
+
+     | <span class="score">score {{average_score}} avg</span>
+     | <span class="elapsed">{{average_elapsed}}ms elapsed avg</span>
+
+  <div class="collapsible-content">
+    <p>
+      <ul>
+      {{#hits}}
+        <li><a href="https://www.nypl.org/research/research-catalog/bib/{{bnum}}">{{bnum}}: {{title}}{{#author}} ({{author}}){{/author}}</a></li>
+      {{/hits}}
+      </ul>
+    </p>
+  </div>
+  </li>
+
+{{/run_summary}}
+
+</ul>

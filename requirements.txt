@@ -1,0 +1,7 @@
+pyyaml
+elasticsearch==8.18.0
+pystache==0.6.8
+matplotlib
+markdown
+boto3
+nypl-py-utils[s3-client]

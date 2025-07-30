@@ -1,0 +1,26 @@
+name: Deploy
+on:
+  push:
+    branches:
+      - main
+jobs:
+  deploy-lambda:
+    env:
+      BRANCH_NAME: ${{ github.ref_name == 'production' && 'production' || 'qa' }}
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+     - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Push qa image to ECR
+        run: ./provisioning/push-image.sh qa
+
+      - uses: hashicorp/setup-terraform@v2
+
+      - name: Update app in QA
+        run: |
+          terraform -chdir=provisioning init -input=false
+          terraform -chdir=provisioning apply -var 'environment=qa' -auto-approve -input=false
