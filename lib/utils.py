@@ -1,8 +1,23 @@
 import subprocess
+import readline
 
 # import os
 from pathlib import Path
 import urllib.request
+
+
+def prompt_with_prefill(prompt, text):
+    def hook():
+        readline.insert_text(text)
+        readline.redisplay()
+    readline.set_pre_input_hook(hook)
+    result = input(prompt)
+    readline.set_pre_input_hook()
+    return result
+
+
+def git_active_branch(base_dir):
+    return shell_exec("git", "-C", base_dir, "rev-parse", "--abbrev-ref", "HEAD")
 
 
 def shell_exec(*_args, **kwargs):

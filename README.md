@@ -52,18 +52,29 @@ source .venv/bin/activate
 
 To re-run all tests against all registered commits for a named application (for example when targets are modified):
 ```
-python main.py APPLICATION all [--rows ROWS]
-```
-
-To run tests for a named, local application (for example to assess changes under development) and view the report (without modifying the current official report in S3):
-```
-python main.py APPLICATION current [--rows ROWS] [--appdir APPDIR]
+python main.py APPLICATION test-all [--rows ROWS]
 ```
 
 To rebuild the report for a named application using saved manifests:
 ```
 python main.py APPLICATION rebuild-report
 ```
+
+### Building reports for local changes
+
+To run tests for a named, local application (for example to assess changes under development) use the `test-local` command. This allows you to build a temporary report based on a local app, even for code that is not yet committed, and optionally publish the resulting report.
+
+```
+python main.py APPLICATION test-local --appdir APPDIR --description DESC [--rows ROWS] [--publish]
+```
+
+For example, to build a report against local discovery-api changes and publish a sharable report:
+
+```
+python main.py discovery-api test-local --appdir ../discovery-api --description "my feature wip" --publish
+```
+
+You'll be prompted for the best place to publish the temp report.
 
 ### Docker:
 
