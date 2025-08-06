@@ -117,6 +117,7 @@ search_scope: "contributor"
 metric: "precision"
 metric_at: 2
 relevant:
+  - "b22141944"
   - "b10002582"
   - "b14650132"
 reason: "initial target"
