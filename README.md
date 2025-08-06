@@ -8,7 +8,7 @@ In the case of the discovery-api, this should only happen when there are updates
  - `lib/resources.js`, or
  - `lib/elasticsearch/*`
 
-As a rule of thumb, if either of the above paths appear in the PR, the PR should include a candidate relevancy report.
+As a rule of thumb, if either of the above paths appear in the PR, the PR likely needs to include a candidate relevancy report.
 
 ## Setup
 
