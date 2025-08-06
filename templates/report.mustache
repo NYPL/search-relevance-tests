@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <title>Rank Eval Report</title>
+  <meta charset="utf-8">
+  <style type="text/css">
+    body { font-family: sans-serif; }
+    textarea { display:inline-block; height:1px !important; width:1px !important; opacity:0 }
+    a.copy-to-clipboard::before { content: "\\01F4CB "; }
+    a.copy-to-clipboard:active::before { content: "\\2705 "; }
+    span.score, span.elapsed { display: inline-block; color: white; padding: 2px 7px; border-radius: 5px;, font-size: 0.85em; }
+    span.score { background-color: {{colors.blue}}; }
+    span.elapsed { background-color: {{colors.red}}; }
+
+    a {
+      color: #0069BF;
+      text-decoration:none;
+    }
+    a:hover {
+      text-decoration:underline;
+    }
+
+    #left-nav {
+      top: 0;
+      bottom: 0;
+      width: 400px;
+      overflow: auto;
+      position: fixed;
+      padding-bottom: 100px;
+    }
+
+    #left-nav ul {
+      padding-left: 0
+    }
+
+    #left-nav li { 
+      list-style: none;
+      clear: both;
+      padding-left: 0;
+    }
+
+    #left-nav a { 
+      text-decoration: none;
+      color: #555;
+    }
+
+    #left-nav a img { 
+      width: auto;
+      margin-right: 10px;
+      float: left;
+    }
+
+    #left-nav a span { 
+      display: block;
+      width: 300px;
+      float: left;
+    }
+
+
+    #main {
+      position: absolute;
+      left: 420px;
+      right: 20px;
+      padding-bottom:100px;
+    }
+
+    h2 {
+      padding-top: 20px;
+    }
+
+
+    .collapsible-heading {
+      cursor: pointer;
+      border: none;
+      text-align: left;
+      outline: none;
+      padding: 6px 12px;
+      border: solid #C4C4C4 1px;
+      border-top-width: 0;
+    }
+
+    .collapsible-heading:first-of-type {
+      border-top-width: 1px;
+    }
+
+    .collapsible-heading.active, .collapsible-heading:hover {
+      border: solid #616161 1px;
+      background-color: #E9E9E9;
+    }
+
+    .collapsible-content {
+      padding: 0 18px;
+      display: none;
+      overflow: hidden;
+      border: solid #C4C4C4 1px;
+      border-top: none;
+    }
+
+    .hit-found-icon {
+      display: inline-block;
+      width: 30px;
+    }
+
+    .within-metric:not(:has(~ .within-metric)):not(:last-of-type) {
+      border-bottom: dashed gray 2px;
+      padding-bottom: 12px;
+      margin-bottom: 12px;
+    }
+
+    .within-metric:not(:has(~ .within-metric)):not(:last-of-type)::after {
+      content: "metric boundary";
+      display: block;
+      position: relative;
+      top: 10px;
+      font-size: 12px;
+    }
+
+    ul.target-runs, ul.runs-summary {
+      list-style: none;
+    }
+
+    ul.target-runs > li {
+      display: block;
+    }
+
+    ul.runs-summary li {
+      padding: 0.5em;
+    }
+  </style>
+  <script type="text/javascript">
+    function copyQueryToClipboard (queryId) {
+        const textarea = document.getElementById(queryId)
+        textarea.select()
+        try {
+            return document.execCommand("copy");  // Security exception may be thrown by some browsers.
+        } catch (ex) {
+            console.warn("Copy to clipboard failed.", ex);
+            return prompt("Copy to clipboard: Ctrl+C, Enter", text);
+        }
+    }
+
+    const applyCollapsibleSections = function () {
+      var coll = document.getElementsByClassName("collapsible-heading");
+      var i;
+
+      for (i = 0; i < coll.length; i++) {
+        coll[i].addEventListener("click", function() {
+          this.classList.toggle("active");
+          var content = this.nextElementSibling;
+          if (content.style.display === "block") {
+            content.style.display = "none";
+          } else {
+            content.style.display = "block";
+          }
+        });
+      }
+    }
+
+    window.addEventListener("load", applyCollapsibleSections)
+  </script>
+</head>
+<body>
+  <div id="left-nav">
+    <ul>
+    {{#targets}}
+      <li>
+        <a href="#{{target.key}}">
+          <img src="./graphs/{{target.key}}-thumb.png?report_id={{report_id}}" />
+          <span>{{number}}. {{target.search_scope}} "<b>{{target.q}}</b>": {{target.metric}}@{{target.metric_at}}</span>
+        </a>
+      </li>
+    {{/targets}}
+    </ul>
+  </div>
+
+  <div id="main">
+    <h1>RC Search Targets Over Time</h1>
+
+    Built {{build_time}}
+
+    {{>overall}}
+
+    {{#targets}}
+      {{>target}}
+    {{/targets}}
+  </div>
+</body>
+</html>
