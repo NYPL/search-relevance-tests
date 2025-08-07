@@ -191,7 +191,7 @@ search_scope: "all"
 metric: "recall"
 metric_at: 50
 relevant:
-  - "pb626684"
+  - "pb996266843506421"
   - "b12639440"
   - "b21835201"
   - "b12403270"
@@ -258,7 +258,7 @@ metric_at: 4
 relevant:
   - "b11095468"
   - "cb4692334"
-  - "pb1267391"
+  - "pb9912673913506421"
   - "b23193131"
 reason: "initial target"
 notes:
