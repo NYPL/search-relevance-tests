@@ -115,7 +115,7 @@ reason: "initial target"
 q: "gold, leonard"
 search_scope: "contributor"
 metric: "precision"
-metric_at: 2
+metric_at: 3
 relevant:
   - "b22141944"
   - "b10002582"
