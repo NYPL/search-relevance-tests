@@ -53,7 +53,9 @@ class Report:
             # TODO: This was deleting things too aggressively, so disabling for now:
             # os.remove(path)
 
-        for run in self.runs:
+        for ind, run in enumerate(self.runs):
+            print(f"Run {ind + 1} of {len(self.runs)}")
+
             previous_run = None if kwargs.get('rebuild') else self.previous_run_for(run, previous_runs)
             run.collect_data(previous_run)
 
@@ -64,28 +66,37 @@ class Report:
 
         upload_dir(basedir, f"srt/{self.app}/manifests", exclude=["current.json"])
 
-    def add_registered_runs(self):
-        path = f"./applications/{self.app}/commits.csv"
-
-        official_commit_runs = []
+    def official_commits(self):
+        path = local_application_file(self.app, "commits.csv")
         with open(path) as f:
-            official_commit_runs = [
-                Run.for_commit(self, r["commit"], r["description"])
-                for r in csv.DictReader(f)
-            ]
+            return [row for row in csv.DictReader(f)]
+
+    def add_registered_runs(self):
+
+        official_commit_runs = [
+            Run.for_commit(self, c["commit"], c["description"])
+            for c in self.official_commits()
+        ]
         self.runs.extend(official_commit_runs)
 
-    def load_from_manifests(self):
-        self.runs = self.load_runs_from_manifests()
+    def load_from_manifests(self, include_local=False):
+        self.runs = self.load_runs_from_manifests(include_local=include_local)
 
-    def load_runs_from_manifests(self):
+    def load_runs_from_manifests(self, include_local=False):
         directory = f"/tmp/srt/{self.app}/manifests"
         download_dir(f"srt/{self.app}/manifests", directory)
+
+        commits = self.official_commits()
 
         manifest_paths = []
         for file in os.listdir(directory):
             filename = os.fsdecode(file)
-            if filename.endswith(".json"):
+            is_official_commit = filename not in [f'{c["commit"]}.json' for c in commits]
+            is_permitted_local = filename == 'current.json' and include_local
+            if is_official_commit and not is_permitted_local:
+                print(f'Not including manifest {filename} because not in official commits.')
+
+            elif filename.endswith(".json"):
                 manifest_paths.append(os.path.join(str(directory), filename))
 
         manifests = []
@@ -136,6 +147,9 @@ class Report:
                 continue
 
             scores, elapsed, elapsed_relative, counts = normalize_run_data(results)
+            if len(scores) != len(self.runs):
+                print(f'\nFound error in manifests: Expected {len(self.runs)} scores for target {target}; Found {len(scores)}')
+                exit()
 
             create_graph(
                 app_versions,
@@ -185,7 +199,7 @@ class Report:
             f.write(html)
 
         if kwargs.get("persist_to_s3", True):
-            upload_dir(basedir, f"srt/{self.app}/report", public=True)
+            upload_dir(basedir, f"srt/{self.app}/report/", public=True)
 
     def results_by_target(self, target):
         results = []

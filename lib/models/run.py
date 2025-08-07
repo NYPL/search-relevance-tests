@@ -112,7 +112,13 @@ class Run:
 
         count = kwargs.get('count', 25)
         fields = ["title", "creatorLiteral"]
-        resp = client.search(index=self.es_config["index"], query=query, source_includes=fields, size=count, track_total_hits=True)
+        highlight = {
+            "order": "score",
+            "fields": {
+                "*": {}
+            }
+        }
+        resp = client.search(index=self.es_config["index"], query=query, source_includes=fields, size=count, track_total_hits=True, highlight=highlight)
         hits = []
         total = 0
         if resp.get('hits') and resp['hits'].get('hits'):
@@ -121,6 +127,12 @@ class Run:
                 for field in fields:
                     if hit['_source'].get(field) and type(hit['_source'][field]) is list and len(hit['_source'][field]) > 0:
                         hit['_source'][field] = hit['_source'][field][0]
+                if 'highlight' in hit:
+                    hit['highlight'] = [
+                        {"field": field, "values": values}
+                        for field, values in hit["highlight"].items()
+                        if field not in ['nyplSource', 'buildingLocationIds', 'issuance.id']
+                    ]
                 hits.append(hit)
         return hits, total
 

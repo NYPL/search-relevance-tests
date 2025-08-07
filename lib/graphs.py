@@ -56,11 +56,11 @@ def create_graph(labels, scores, elapsed, key, **kwargs):
     path = f'{kwargs["basedir"]}/graphs/{key}-thumb.png'
     if not os.path.exists(path) or kwargs.get('rebuild', False):
         print(f"    Creating fig. thumb: {path}")
-        last_two_vals_1 = scores[-2:]
+        thumb_vals = scores[-3:]
 
-        x_ticks = [ind + 1 for ind, v in enumerate(last_two_vals_1)]
+        x_ticks = [ind + 1 for ind, v in enumerate(thumb_vals)]
         fig, ax = plt.subplots(figsize=(0.6, 0.4), layout="constrained")
-        ax.plot(x_ticks, last_two_vals_1, color=blue)
+        ax.plot(x_ticks, thumb_vals, color=blue)
 
         y_ticks = [0, 0.5, 1]
         ax.set_yticks(y_ticks, ["" for y in y_ticks])

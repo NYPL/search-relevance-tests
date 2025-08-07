@@ -28,6 +28,9 @@ def parse_args():
         "--no-rebuild-graphs", dest="rebuild_graphs", action="store_false"
     )
     parser.add_argument(
+        "--include-local", dest="include_local", action="store_true"
+    )
+    parser.add_argument(
         "--rebuild", action="store_true"
     )
     parser.add_argument(
@@ -72,7 +75,9 @@ def run_test_all(**kwargs):
 
 def rebuild_report(**kwargs):
     report = Report(app=kwargs["app"])
-    report.load_from_manifests()
+    report.load_from_manifests(
+        include_local=kwargs.get("include_local"),
+    )
     report.build(
         rebuild_graphs=kwargs.get("rebuild_graphs", True),
         persist_to_s3=kwargs.get("persist_to_s3"),
@@ -127,7 +132,7 @@ if len(sys.argv) > 0 and "main.py" in sys.argv[0]:
 
         if args.command == "test-local":
             run_test_local(app=args.app, rows=rows, appdir=args.appdir, description=args.description)
-            rebuild_report(app=args.app, persist_to_s3=False, rebuild_graphs=args.rebuild_graphs)
+            rebuild_report(app=args.app, persist_to_s3=False, include_local=True, rebuild_graphs=args.rebuild_graphs)
 
             local_report_path = f"/tmp/srt/{args.app}/report"
             report_url = f"{local_report_path}/index.html"
@@ -146,6 +151,6 @@ if len(sys.argv) > 0 and "main.py" in sys.argv[0]:
         if args.command == "test-all":
             run_test_all(app=args.app, rows=rows, rebuild=args.rebuild)
         if args.command == "rebuild-report":
-            rebuild_report(app=args.app, persist_to_s3=args.persist_to_s3, rebuild_graphs=args.rebuild_graphs)
+            rebuild_report(app=args.app, persist_to_s3=args.persist_to_s3, rebuild_graphs=args.rebuild_graphs, include_local=args.include_local)
         if args.command == "build":
             build_application_versions(app=args.app)

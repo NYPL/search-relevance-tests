@@ -5,12 +5,15 @@
   <meta charset="utf-8">
   <style type="text/css">
     body { font-family: sans-serif; }
-    textarea { display:inline-block; height:1px !important; width:1px !important; opacity:0 }
+    textarea { display:none; height:1px !important; width:1px !important; opacity:0 }
     a.copy-to-clipboard::before { content: "\\01F4CB "; }
     a.copy-to-clipboard:active::before { content: "\\2705 "; }
     span.score, span.elapsed { display: inline-block; color: white; padding: 2px 7px; border-radius: 5px;, font-size: 0.85em; }
     span.score { background-color: {{colors.blue}}; }
-    span.elapsed { background-color: {{colors.red}}; }
+    span.elapsed {
+      margin-left: 4px;
+      background-color: {{colors.red}};
+    }
 
     a {
       color: #0069BF;
@@ -74,9 +77,19 @@
       border: none;
       text-align: left;
       outline: none;
-      padding: 6px 12px;
+      padding: 6px 26px;
       border: solid #C4C4C4 1px;
       border-top-width: 0;
+    }
+
+    .target-run-heading {
+      text-overflow: ellipsis;
+      width: 400px;
+      overflow: hidden;
+      display: inline-block;
+      white-space: nowrap;
+      position: relative;
+      top: 4px
     }
 
     .collapsible-heading:first-of-type {
@@ -126,6 +139,48 @@
     ul.runs-summary li {
       padding: 0.5em;
     }
+
+    label.highlights-control-label {
+      padding-left: 3em;
+    }
+
+    ul.highlights {
+      margin-left: 3em;
+      display: none;
+      list-style: none;
+      padding: 0.3em 0 1em;
+    }
+
+    ul.highlights li {
+      padding-bottom: 0.1em;
+    }
+
+    ul.highlights li span {
+      padding-right: 0.5em;
+      font-weight: bold;
+    }
+
+    ul.highlights li em {
+      background-color: #F9E08E;
+      font-style: normal;
+    }
+
+    .animate-opacity {
+      @starting-style {
+        opacity: 0;
+      }
+      
+      transition-property: display, opacity;
+      transition-duration: 0.2s;
+      transition-behavior: allow-discrete;
+    }
+
+    .plus {
+      width: auto;
+      float: right;
+      font-size: 20px;
+    }
+
   </style>
   <script type="text/javascript">
     function copyQueryToClipboard (queryId) {
@@ -144,19 +199,42 @@
       var i;
 
       for (i = 0; i < coll.length; i++) {
+        var plus = document.createElement('span')
+        plus.textContent = '+'
+        plus.classList.add('plus')
+        coll[i].appendChild(plus)
+
+
         coll[i].addEventListener("click", function() {
           this.classList.toggle("active");
           var content = this.nextElementSibling;
+          var plus = this.querySelector('.plus')
           if (content.style.display === "block") {
             content.style.display = "none";
+            plus.textContent = '+'
           } else {
             content.style.display = "block";
+            plus.textContent = '-'
           }
         });
       }
     }
 
+    const applyHighlightControls = function () {
+      var checkboxes = document.getElementsByClassName("highlights-control")
+      Array.from(checkboxes).forEach((input) => {
+        input.addEventListener("change", function (e) {
+          const highlights = this.closest('div').querySelectorAll("ul.highlights")
+          var checked = this.checked
+          Array.from(highlights).forEach((div) => {
+            div.style.display = checked ? 'block' : 'none'
+          })
+        })
+      })
+    }
+
     window.addEventListener("load", applyCollapsibleSections)
+    window.addEventListener("load", applyHighlightControls)
   </script>
 </head>
 <body>

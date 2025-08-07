@@ -41,6 +41,9 @@ class SearchTarget:
     def __eq__(self, other):
         return self.q == other.q
 
+    def __str__(self):
+        return f'<SearchTarget {self.key}>'
+
     @staticmethod
     def from_json(json):
         # print(f"SearchTarget.from_json relevant = {json['relevant']}")
