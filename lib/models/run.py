@@ -53,13 +53,18 @@ class Run:
     def commit_date_formatted(self):
         return self.commit_date.strftime("%b %d, %Y")
 
+    def is_local(self):
+        return self.commit_id not in [
+            c['commit'] for c in self.report.official_commits()
+        ]
+
     def app_version(self):
-        official_commits = []
-        with open(f"./applications/{self.report.app}/commits.csv") as f:
-            official_commits = [r["commit"] for r in csv.DictReader(f)]
-        if self.commit_id not in official_commits:
+        if self.is_local():
             return "CANDIDATE"
-        ind = official_commits.index(self.commit_id)
+        official_commit_ids = [
+            c['commit'] for c in self.report.official_commits()
+        ]
+        ind = official_commit_ids.index(self.commit_id)
         return f"V{ind + 1}"
 
     def get_commit_id(self):
@@ -277,7 +282,9 @@ class Run:
 
         if self.commit_id is None:
             self.get_commit_id()
-        self.get_commit_date()
+
+        if not self.explicit_base_dir:
+            self.get_commit_date()
 
     def run_targets(self, previous_run):
         print(f"Running {len(self.report.targets)} targets for {self.commit_id}")
@@ -379,7 +386,7 @@ class Run:
     @staticmethod
     def for_path(report, path, description=""):
         print(f"Building Run for {path}")
-        return Run(report=report, commit_description=description, base_dir=path)
+        return Run(report=report, commit_description=description, commit_date=datetime.now(), base_dir=path)
 
     @staticmethod
     def from_json(report, json, **kwargs):

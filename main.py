@@ -81,6 +81,7 @@ def rebuild_report(**kwargs):
     report.build(
         rebuild_graphs=kwargs.get("rebuild_graphs", True),
         persist_to_s3=kwargs.get("persist_to_s3"),
+        include_local=kwargs.get("include_local"),
     )
 
 

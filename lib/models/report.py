@@ -19,6 +19,8 @@ class Report:
         self.targets = []
         self.runs = []
 
+        self._official_commits = None
+
     def jsonable(self):
         return {"app": self.app}
 
@@ -67,12 +69,13 @@ class Report:
         upload_dir(basedir, f"srt/{self.app}/manifests", exclude=["current.json"])
 
     def official_commits(self):
-        path = local_application_file(self.app, "commits.csv")
-        with open(path) as f:
-            return [row for row in csv.DictReader(f)]
+        if self._official_commits is None:
+            path = local_application_file(self.app, "commits.csv")
+            with open(path) as f:
+                self._official_commits = [row for row in csv.DictReader(f)]
+        return self._official_commits
 
     def add_registered_runs(self):
-
         official_commit_runs = [
             Run.for_commit(self, c["commit"], c["description"])
             for c in self.official_commits()
@@ -112,9 +115,9 @@ class Report:
             run = Run.from_json(self, manifest, previous_commit_id=previous_commit_id)
             runs.append(run)
 
-        for run in runs:
+        for ind, run in enumerate(runs):
             print(
-                f"Loaded run: {run.commit_id} - {run.commit_date} - {len(run.responses)} responses"
+                f"Loaded run: {manifest_paths[ind]} - {run.commit_date} - {len(run.responses)} responses"
             )
         return runs
 
@@ -186,12 +189,19 @@ class Report:
         ]
         renderer = pystache.Renderer(search_dirs="./templates")
 
+        local_note = False
+        if kwargs.get('include_local'):
+            for run in self.runs:
+                if run.is_local():
+                    local_note = run.commit_description
+
         template_vars = {
             "report_id": datetime.now(),
             "build_time": datetime.now().strftime("%c"),
             "colors": palette,
             "run_summary": as_json(run_summary),
             "targets": as_json(targets_with_runs),
+            "local_note": local_note
         }
         html = renderer.render("{{>report}}", template_vars)
 
