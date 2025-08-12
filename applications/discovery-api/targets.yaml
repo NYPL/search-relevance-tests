@@ -441,6 +441,8 @@ notes:
 relevant:
   - b16869314
   - b23495860
+metric: recall
+metric_at: 2
 ---
 q: The African mind literary
 search_scope: title
@@ -450,6 +452,8 @@ notes:
   - SCH libguide
 relevant:
   - b11559801
+metric: recall
+metric_at: 1
 ---
 q: machine age in America wilson
 search_scope: keyword
@@ -463,6 +467,8 @@ relevant:
   - b19270044
   - pb993396963506421
   - cb454017
+metric: recall
+metric_at: 4
 ---
 q: another country baldwin
 search_scope: keyword
@@ -487,6 +493,8 @@ relevant:
   - b10354761
   - b22421887
   - b10502216
+metric: recall
+metric_at: 13
 ---
 q: anis kabul
 search_scope: keyword
@@ -497,6 +505,8 @@ notes:
 relevant:
   - b10832381
   - cb11381160
+metric: recall
+metric_at: 2
 ---
 q: wilfredo lam and the international avant garde
 search_scope: title
@@ -512,4 +522,6 @@ notes:
 relevant:
   - b15428422
   - b15022536
---
+metric: recall
+metric_at: 2
+---
