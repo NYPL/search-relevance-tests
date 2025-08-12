@@ -433,3 +433,83 @@ metric_at: 3
 relevant:
  - b13399796
 ---
+q: Are we there yet? golden age
+search_scope: keyword
+notes:
+  - Title search also returns less-relevant result first
+  - SCH libguide
+relevant:
+  - b16869314
+  - b23495860
+---
+q: The African mind literary
+search_scope: title
+notes:
+  - 'Adding "perspective" does not imrpove results much, but removing "the" does
+    '
+  - SCH libguide
+relevant:
+  - b11559801
+---
+q: machine age in America wilson
+search_scope: keyword
+notes:
+  - |-
+    Results feel better without Wilson
+    Similar to SCC_4820
+  - SASB libguide
+relevant:
+  - b11000530
+  - b19270044
+  - pb993396963506421
+  - cb454017
+---
+q: another country baldwin
+search_scope: keyword
+notes:
+  - I think you can make the argument that if you're searching "another country
+    baldwin" as a keyword search you can expect to find more criticism, whereas
+    if you were looking for all editions/copies of "another country" you'd use
+    advanced search to do title:another country au:baldwin. But I also think
+    people probably do expect to find the book itself with this search!
+  - SCH libguide
+relevant:
+  - b11579220
+  - b14262323
+  - hb990010611440203941
+  - b16356344
+  - pb993567243506421
+  - b11479413
+  - b21213585
+  - hb990036773220203941
+  - b22170125
+  - b10145881
+  - b10354761
+  - b22421887
+  - b10502216
+---
+q: anis kabul
+search_scope: keyword
+notes:
+  - First result comes up when you type Anis, but not Anis Kabul, which should
+    disambiguate it
+  - SASB libguide
+relevant:
+  - b10832381
+  - cb11381160
+---
+q: wilfredo lam and the international avant garde
+search_scope: title
+notes:
+  - >-
+    I made a typo - I thought it was wilfredo but it is wifredo, no L. Shouldn't
+    the target records still be higher up than the other results becuase they
+    contain the string "lam and the international avant garde"? and/or because
+    they contain all of those words?
+
+    Also kw search for same title
+  - SASB/SCH? libguide
+relevant:
+  - b15428422
+  - b15022536
+--
