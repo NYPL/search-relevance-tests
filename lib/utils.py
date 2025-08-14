@@ -5,13 +5,14 @@ from nypl_py_utils.functions.log_helper import create_log
 from pathlib import Path
 import urllib.request
 
-logger = create_log('utils')
+logger = create_log("utils")
 
 
 def prompt_with_prefill(prompt, text):
     def hook():
         readline.insert_text(text)
         readline.redisplay()
+
     readline.set_pre_input_hook(hook)
     result = input(prompt)
     readline.set_pre_input_hook()
@@ -71,4 +72,4 @@ def download_file(url, local_path):
     source = urllib.request.urlopen(url)
     with open(local_path, "wb") as f:
         f.write(source.read())
-        logger.debug(f'  Wrote {url} to {local_path}')
+        logger.debug(f"  Wrote {url} to {local_path}")

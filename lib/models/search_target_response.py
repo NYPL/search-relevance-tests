@@ -21,14 +21,13 @@ class SearchTargetResponse:
                 report = kwargs["response"]["details"]["report"]
 
                 self.hits = [
-                    {
-                        "bnum": hit["hit"]["_id"],
-                        "found": hit.get("rating") is not None
-                    }
+                    {"bnum": hit["hit"]["_id"], "found": hit.get("rating") is not None}
                     for hit in report["hits"]
                     # if hit.get("rating", None) is not None
                 ]
-                self.hits = [{**hit, **basic_bib_metadata(hit["bnum"])} for hit in self.hits]
+                self.hits = [
+                    {**hit, **basic_bib_metadata(hit["bnum"])} for hit in self.hits
+                ]
                 self.found = len([h for h in self.hits if h["found"]])
 
         self.hits_length = 0
@@ -57,8 +56,11 @@ class SearchTargetResponse:
     @staticmethod
     def from_json(obj, run=None):
         props = {**obj}
-        props["target"] = obj["target"] if type(obj["target"]) == SearchTarget \
+        props["target"] = (
+            obj["target"]
+            if type(obj["target"]) == SearchTarget
             else SearchTarget.from_json(obj.get("target"))
+        )
         props["run"] = run
         props["raw"] = obj
         search_target_response = SearchTargetResponse(**props)

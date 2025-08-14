@@ -44,11 +44,9 @@ class Run:
         return self.file_key == "latest"
 
     def app_version(self):
-        if self.file_key in ['latest', 'candidate']:
+        if self.file_key in ["latest", "candidate"]:
             return self.file_key.upper()
-        official_commit_ids = [
-            c['commit'] for c in self.app_config.official_commits()
-        ]
+        official_commit_ids = [c["commit"] for c in self.app_config.official_commits()]
         if self.commit_id not in official_commit_ids:
             return None
         ind = official_commit_ids.index(self.commit_id)
@@ -60,9 +58,7 @@ class Run:
         return self.commit_id
 
     def get_commit_date(self):
-        cache_path = (
-            f"./applications/{self.app_config.app_name}/builds/{self.commit_id}.meta.json"
-        )
+        cache_path = f"./applications/{self.app_config.app_name}/builds/{self.commit_id}.meta.json"
         if os.path.exists(cache_path):
             self.logger.debug("Using cached commit date")
             with open(cache_path, "r") as f:
@@ -102,28 +98,35 @@ class Run:
     def matching_documents(self, query, **kwargs):
         client = es_client()
 
-        count = kwargs.get('count', 25)
+        count = kwargs.get("count", 25)
         fields = ["title", "creatorLiteral"]
-        highlight = {
-            "order": "score",
-            "fields": {
-                "*": {}
-            }
-        }
-        resp = client.search(index=self.es_config["index"], query=query, source_includes=fields, size=count, track_total_hits=True, highlight=highlight)
+        highlight = {"order": "score", "fields": {"*": {}}}
+        resp = client.search(
+            index=self.es_config["index"],
+            query=query,
+            source_includes=fields,
+            size=count,
+            track_total_hits=True,
+            highlight=highlight,
+        )
         hits = []
         total = 0
-        if resp.get('hits') and resp['hits'].get('hits'):
-            total = int(resp['hits']['total']['value'])
-            for hit in resp['hits']['hits']:
+        if resp.get("hits") and resp["hits"].get("hits"):
+            total = int(resp["hits"]["total"]["value"])
+            for hit in resp["hits"]["hits"]:
                 for field in fields:
-                    if hit['_source'].get(field) and type(hit['_source'][field]) is list and len(hit['_source'][field]) > 0:
-                        hit['_source'][field] = hit['_source'][field][0]
-                if 'highlight' in hit:
-                    hit['highlight'] = [
+                    if (
+                        hit["_source"].get(field)
+                        and type(hit["_source"][field]) is list
+                        and len(hit["_source"][field]) > 0
+                    ):
+                        hit["_source"][field] = hit["_source"][field][0]
+                if "highlight" in hit:
+                    hit["highlight"] = [
                         {"field": field, "values": values}
                         for field, values in hit["highlight"].items()
-                        if field not in ['nyplSource', 'buildingLocationIds', 'issuance.id']
+                        if field
+                        not in ["nyplSource", "buildingLocationIds", "issuance.id"]
                     ]
                 hits.append(hit)
         return hits, total
@@ -182,7 +185,9 @@ class Run:
         if commit_id is None:
             commit_id = self.commit_id
 
-        package_path = os.path.join(self.app_config.local_config_path(), "builds", f"{commit_id}.zip")
+        package_path = os.path.join(
+            self.app_config.local_config_path(), "builds", f"{commit_id}.zip"
+        )
         if use_cache and os.path.isfile(package_path):
             print("--------------------------------------------------")
             print(f"| Using built package: {package_path}")
@@ -216,7 +221,13 @@ class Run:
             """
 
     def package_app(self):
-        cmd = ["bash", "./package.sh", self.base_dir, self.app_config.app_name, self.commit_id]
+        cmd = [
+            "bash",
+            "./package.sh",
+            self.base_dir,
+            self.app_config.app_name,
+            self.commit_id,
+        ]
         self.logger.debug(f"CMD: {' '.join(cmd)}")
         shell_exec(*cmd)
         """
@@ -225,8 +236,8 @@ class Run:
         )
         """
 
-        cache_path = (
-            os.path.join(self.app_config.local_config_path(), "builds", f"{self.commit_id}.meta.json")
+        cache_path = os.path.join(
+            self.app_config.local_config_path(), "builds", f"{self.commit_id}.meta.json"
         )
         commit_date = self.get_commit_date().isoformat()
         with open(cache_path, "w") as f:
@@ -268,7 +279,9 @@ class Run:
             self.commit_id = previous_run.commit_id
             self.commit_date = previous_run.commit_date
 
-            self.logger.info(f"  Skipping re-running {self.commit_id} because nothing changed")
+            self.logger.info(
+                f"  Skipping re-running {self.commit_id} because nothing changed"
+            )
             return
 
         if (
@@ -291,7 +304,9 @@ class Run:
 
     def run_targets(self, previous_run):
         for_what = self.base_dir if self.commit_id is None else self.commit_id
-        self.logger.info(f"Running {len(self.app_config.targets)} targets for {for_what}")
+        self.logger.info(
+            f"Running {len(self.app_config.targets)} targets for {for_what}"
+        )
 
         for ind, target in enumerate(self.app_config.targets):
             self.logger.info(f"  Running target {ind}: {target.key}")
@@ -307,7 +322,9 @@ class Run:
                 self.logger.info(
                     f"    Skipping re-running {self.commit_id}: {target.key} because nothing changed"
                 )
-                self.responses.append(SearchTargetResponse.from_json(previous_response.raw, self))
+                self.responses.append(
+                    SearchTargetResponse.from_json(previous_response.raw, self)
+                )
                 continue
 
             params = {"search_scope": target.search_scope, "q": target.q}
@@ -319,32 +336,36 @@ class Run:
             response = self.es_rank_eval(
                 requests=call["requests"],
                 metric=call["metric"],
-                index=self.es_config["index"]
+                index=self.es_config["index"],
             )
 
             start_time = time.time()
-            matching_documents, count = self.matching_documents(query, count=max(target.metric_at + 10, 25))
+            matching_documents, count = self.matching_documents(
+                query, count=max(target.metric_at + 10, 25)
+            )
             elapsed = round((time.time() - start_time) * 1000)
 
             for ind, doc in enumerate(matching_documents):
-                if doc['_id'] in target.relevant:
-                    doc['relevant'] = True
+                if doc["_id"] in target.relevant:
+                    doc["relevant"] = True
                 if ind < target.metric_at:
-                    doc['within_metric'] = True
+                    doc["within_metric"] = True
 
             if response["failures"].get("report") is not None:
                 self.logger.error(f'Got Error: {response["failures"]}')
                 exit()
 
             self.responses.append(
-                SearchTargetResponse.from_json({
-                    "target": target,
-                    "response": response,
-                    "matching_documents": matching_documents,
-                    "query": query,
-                    "elapsed": elapsed,
-                    "count": count,
-                })
+                SearchTargetResponse.from_json(
+                    {
+                        "target": target,
+                        "response": response,
+                        "matching_documents": matching_documents,
+                        "query": query,
+                        "elapsed": elapsed,
+                        "count": count,
+                    }
+                )
             )
 
     def es_count(self, query):
@@ -401,7 +422,9 @@ class Run:
     @staticmethod
     def for_commit(app_config, commit, description=""):
         create_log(__name__).info(f"Building Run for {commit}")
-        return Run(app_config=app_config, commit_id=commit, commit_description=description)
+        return Run(
+            app_config=app_config, commit_id=commit, commit_description=description
+        )
 
     @staticmethod
     def for_path(app_config, path, description="", file_key=None):
@@ -411,7 +434,7 @@ class Run:
             commit_description=description,
             commit_date=datetime.now(),
             base_dir=path,
-            file_key=file_key
+            file_key=file_key,
         )
 
     @staticmethod
@@ -434,7 +457,9 @@ class Run:
 
     @staticmethod
     def by_manifest_file(app_config, commit_id):
-        path = os.path.join(app_config.local_temp_path("manifests"), f"{commit_id}.json")
+        path = os.path.join(
+            app_config.local_temp_path("manifests"), f"{commit_id}.json"
+        )
         if os.path.exists(path):
             with open(path) as f:
                 return Run.from_json(app_config, json.loads(f.read()))
@@ -450,11 +475,19 @@ class Run:
         manifest_paths = []
         for file in os.listdir(directory):
             filename = os.fsdecode(file)
-            is_official_commit = filename not in [f'{c["commit"]}.json' for c in commits]
-            is_permitted_local = filename == 'local.json' and include_local
-            is_permitted_latest = filename == 'latest.json' and include_latest
-            if is_official_commit and not is_permitted_local and not is_permitted_latest:
-                create_log(__name__).info(f'Not including manifest {filename} because not in official commits.')
+            is_official_commit = filename not in [
+                f'{c["commit"]}.json' for c in commits
+            ]
+            is_permitted_local = filename == "local.json" and include_local
+            is_permitted_latest = filename == "latest.json" and include_latest
+            if (
+                is_official_commit
+                and not is_permitted_local
+                and not is_permitted_latest
+            ):
+                create_log(__name__).info(
+                    f"Not including manifest {filename} because not in official commits."
+                )
 
             elif filename.endswith(".json"):
                 manifest_paths.append(os.path.join(str(directory), filename))
@@ -469,7 +502,9 @@ class Run:
         runs = []
         for ind, manifest in enumerate(manifests):
             previous_commit_id = manifests[ind - 1]["commit_id"] if ind > 0 else None
-            run = Run.from_json(app_config, manifest, previous_commit_id=previous_commit_id)
+            run = Run.from_json(
+                app_config, manifest, previous_commit_id=previous_commit_id
+            )
             runs.append(run)
 
         for ind, run in enumerate(runs):

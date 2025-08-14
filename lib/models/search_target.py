@@ -23,7 +23,7 @@ class SearchTarget:
             )
             .replace("'", "-apos-")
             .replace('"', "-quot-")
-            .replace('?', "-quest-")
+            .replace("?", "-quest-")
             .replace(" ", "_")
         )
 
@@ -43,7 +43,7 @@ class SearchTarget:
         return self.q == other.q
 
     def __str__(self):
-        return f'<SearchTarget {self.key}>'
+        return f"<SearchTarget {self.key}>"
 
     @staticmethod
     def from_json(json):

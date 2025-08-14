@@ -36,21 +36,28 @@ class Report:
         previous_runs = self.load_runs_from_manifests()
 
         basedir = self.app_config.local_temp_path("manifests")
-        stale_manifests = set([
-            run.manifest_file_path(basedir) for run in previous_runs
-            if run.commit_id not in [
-                r.commit_id for r in self.runs
+        stale_manifests = set(
+            [
+                run.manifest_file_path(basedir)
+                for run in previous_runs
+                if run.commit_id not in [r.commit_id for r in self.runs]
             ]
-        ])
+        )
         for path in stale_manifests:
-            self.logger.info(f"  Consider removing stale run not found in commits.csv: {path}")
+            self.logger.info(
+                f"  Consider removing stale run not found in commits.csv: {path}"
+            )
             # TODO: This was deleting things too aggressively, so disabling for now:
             # os.remove(path)
 
         for ind, run in enumerate(self.runs):
             self.logger.info(f"Run {ind + 1} of {len(self.runs)}")
 
-            previous_run = None if kwargs.get('rebuild') else self.previous_run_for(run, previous_runs)
+            previous_run = (
+                None
+                if kwargs.get("rebuild")
+                else self.previous_run_for(run, previous_runs)
+            )
             run.collect_data(previous_run)
 
     def save_manifests(self):
@@ -58,7 +65,11 @@ class Report:
         basedir = self.app_config.local_temp_path("manifests")
         [run.save_manifest(basedir) for run in self.runs]
 
-        upload_dir(basedir, f"srt/{self.app_config.app_name}/manifests", exclude=["local.json", "latest.json"])
+        upload_dir(
+            basedir,
+            f"srt/{self.app_config.app_name}/manifests",
+            exclude=["local.json", "latest.json"],
+        )
 
     def add_registered_runs(self):
         official_commit_runs = [
@@ -68,14 +79,16 @@ class Report:
         self.runs.extend(official_commit_runs)
 
     def load_runs_from_manifests(self, include_local=False, include_latest=False):
-        self.runs = Run.all_from_manifests(self.app_config, include_local=include_local, include_latest=include_latest)
+        self.runs = Run.all_from_manifests(
+            self.app_config, include_local=include_local, include_latest=include_latest
+        )
         return self.runs
 
     def build(self, folder_name="report", **kwargs):
         palette = {"red": "#920711", "blue": "#00838a", "orange": "#EC7B1F"}
 
         basedir = self.app_config.local_temp_path(folder_name)
-        self.logger.info(f'Building report in {basedir}')
+        self.logger.info(f"Building report in {basedir}")
 
         os.makedirs(f"{basedir}/graphs", exist_ok=True)
 
@@ -102,7 +115,9 @@ class Report:
 
             scores, elapsed, elapsed_relative, counts = normalize_run_data(results)
             if len(scores) != len(self.runs):
-                self.logger.error(f'\nFound error in manifests: Expected {len(self.runs)} scores for target {target}; Found {len(scores)}. Exiting')
+                self.logger.error(
+                    f"\nFound error in manifests: Expected {len(self.runs)} scores for target {target}; Found {len(scores)}. Exiting"
+                )
                 exit(1)
 
             create_graph(
@@ -142,13 +157,13 @@ class Report:
 
         official_report_url = "https://research-catalog-stats.s3.amazonaws.com/srt/discovery-api/report/index.html"
         alert = None
-        if kwargs.get('include_local'):
+        if kwargs.get("include_local"):
             for run in self.runs:
                 if run.is_local():
                     alert = (
                         f'This is a candidate search relevancy report for: "{run.commit_description}". '
                         f' The current <em>official</em> report <a href="{official_report_url}">'
-                        'is here</a>.'
+                        "is here</a>."
                     )
         if kwargs.get("include_latest"):
             for run in self.runs:
@@ -164,7 +179,7 @@ class Report:
             "colors": palette,
             "run_summary": as_json(run_summary),
             "targets": as_json(targets_with_runs),
-            "alert": alert
+            "alert": alert,
         }
         html = renderer.render("{{>report}}", template_vars)
 
@@ -172,7 +187,9 @@ class Report:
             f.write(html)
 
         if kwargs.get("persist_to_s3", True):
-            upload_dir(basedir, f"srt/{self.app_config.app_name}/{folder_name}/", public=True)
+            upload_dir(
+                basedir, f"srt/{self.app_config.app_name}/{folder_name}/", public=True
+            )
 
     def results_by_target(self, target):
         results = []

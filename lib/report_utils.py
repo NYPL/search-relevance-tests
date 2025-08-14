@@ -8,7 +8,7 @@ from lib.utils import average_by_index
 from lib.filestore import upload_dir
 from nypl_py_utils.functions.log_helper import create_log
 
-logger = create_log('S3')
+logger = create_log("S3")
 
 
 def upload_pending_report(path, log, done=False):
@@ -17,7 +17,7 @@ def upload_pending_report(path, log, done=False):
     template_vars = {
         "log": log,
         "build_time": datetime.now().strftime("%c"),
-        "working": not done
+        "working": not done,
     }
     renderer = pystache.Renderer(search_dirs="./templates")
     html = renderer.render("{{>pending_report}}", template_vars)

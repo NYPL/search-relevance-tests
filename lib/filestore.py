@@ -7,7 +7,7 @@ import mimetypes
 from nypl_py_utils.functions.log_helper import create_log
 
 
-logger = create_log('S3')
+logger = create_log("S3")
 
 
 def write_to_s3(key, data, public=False):

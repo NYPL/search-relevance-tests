@@ -7,6 +7,9 @@ venv:
 	pip install -r requirements.txt
 	pip install -r dev-requirements.txt
 
+lint:
+	black .
+
 clean:
 	rm -rf $(VENV_DIR)
 

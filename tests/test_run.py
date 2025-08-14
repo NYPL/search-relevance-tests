@@ -18,14 +18,17 @@ def test_run_for_json():
     mock_report = MagicMock()
     mock_report().app.return_value = "my-app"
 
-    run = Run.from_json(mock_report, {
-        "commit_id": "commit id",
-        "commit_description": "description",
-        "commit_date": "2012-01-01",
-        "previous_commot_id": "previous commit id",
-        "run_date": "run date",
-        "responses": []
-    })
+    run = Run.from_json(
+        mock_report,
+        {
+            "commit_id": "commit id",
+            "commit_description": "description",
+            "commit_date": "2012-01-01",
+            "previous_commot_id": "previous commit id",
+            "run_date": "run date",
+            "responses": [],
+        },
+    )
 
     assert run.commit_id == "commit id"
 

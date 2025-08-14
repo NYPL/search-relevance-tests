@@ -15,8 +15,8 @@ from nypl_py_utils.functions.config_helper import load_env_file
 from lib.lambda_utils import validate_webhook, WebhookException, lambda_error
 
 
-load_env_file(os.environ.get('ENVIRONMENT', "qa"), 'config/{}.yaml')
-logger = create_log('main')
+load_env_file(os.environ.get("ENVIRONMENT", "qa"), "config/{}.yaml")
+logger = create_log("main")
 
 
 def parse_args():
@@ -30,7 +30,15 @@ def parse_args():
 
     parser.add_argument("app", choices=applications)
     parser.add_argument(
-        "command", choices=["test-local", "test-all", "test-latest", "rebuild-report", "build", "lambda-event"]
+        "command",
+        choices=[
+            "test-local",
+            "test-all",
+            "test-latest",
+            "rebuild-report",
+            "build",
+            "lambda-event",
+        ],
     )
     parser.add_argument("-t", "--targets", default="targets.yaml")
     parser.add_argument(
@@ -39,18 +47,10 @@ def parse_args():
     parser.add_argument(
         "--no-rebuild-graphs", dest="rebuild_graphs", action="store_false"
     )
-    parser.add_argument(
-        "--include-local", dest="include_local", action="store_true"
-    )
-    parser.add_argument(
-        "--include-latest", dest="include_latest", action="store_true"
-    )
-    parser.add_argument(
-        "--rebuild", action="store_true"
-    )
-    parser.add_argument(
-        "--publish", action="store_true"
-    )
+    parser.add_argument("--include-local", dest="include_local", action="store_true")
+    parser.add_argument("--include-latest", dest="include_latest", action="store_true")
+    parser.add_argument("--rebuild", action="store_true")
+    parser.add_argument("--publish", action="store_true")
     parser.add_argument("--rows")
     parser.add_argument("--envfile")
     parser.add_argument("--appdir")
@@ -126,7 +126,9 @@ def run_test_local(**kwargs):
         exit()
 
     logger.info(f"Running targets against code in {kwargs['appdir']}")
-    run = Run.for_path(app_config, kwargs["appdir"], kwargs["description"], file_key="local")
+    run = Run.for_path(
+        app_config, kwargs["appdir"], kwargs["description"], file_key="local"
+    )
     run.collect_data()
     run.save_manifest()
 
@@ -140,12 +142,12 @@ def run_test_all(**kwargs):
         for c in app_config.official_commits()
     ]
     for run in runs:
-        run.collect_data(rebuild=kwargs.get('rebuild'))
+        run.collect_data(rebuild=kwargs.get("rebuild"))
         run.save_manifest()
     upload_dir(
         app_config.local_temp_path("manifests"),
         f"srt/{app_config.app_name}/manifests",
-        exclude=["local.json", "latest.json"]
+        exclude=["local.json", "latest.json"],
     )
     logger.info("Done")
 
@@ -157,17 +159,22 @@ def run_test_latest(**kwargs):
     log = []
 
     try:
+
         def log_progress(message, done=False):
             logger.info(message)
             log.append(message)
             upload_pending_report(f"{app_config.app_name}/report-latest", log, done)
 
         checkout_base_dir = app_config.local_temp_path("app")
-        run = Run.for_path(app_config, checkout_base_dir, 'Latest main branch', file_key="latest")
+        run = Run.for_path(
+            app_config, checkout_base_dir, "Latest main branch", file_key="latest"
+        )
         last_run = Run.all_from_manifests(app_config)[-1]
 
         git_url = f"https://github.com/NYPL/discovery-api/compare/{last_run.commit_id}...{run.get_commit_id()}"
-        log_progress(f"Building 'latest' report for <a href='{git_url}'>changes to main</a>")
+        log_progress(
+            f"Building 'latest' report for <a href='{git_url}'>changes to main</a>"
+        )
 
         log_progress("Initializing app")
         run.initialize_app(use_cache=False, commit_id="HEAD")
@@ -179,9 +186,16 @@ def run_test_latest(**kwargs):
         equivalent, explanation = last_run.has_equivalent_scores(run)
 
         if equivalent:
-            log_progress("No scores changed in main.", True)
+            log_progress(
+                "Detected no scoring differences with "
+                "<a href='https://research-catalog-stats.s3.amazonaws.com/srt/discovery-api/report/index.html'>"
+                "current report</a>.",
+                True,
+            )
         else:
-            logger.info(f'Scores changed: {explanation}')
+            log_progress("Building report")
+
+            logger.info(f"Scores changed: {explanation}")
             run.save_manifest()
             rebuild_report(
                 app=args.app,
@@ -244,7 +258,12 @@ if len(sys.argv) > 0 and "main.py" in sys.argv[0]:
             rows = [int(r) for r in args.rows.split(",")]
 
         if args.command == "test-local":
-            run_test_local(app=args.app, rows=rows, appdir=args.appdir, description=args.description)
+            run_test_local(
+                app=args.app,
+                rows=rows,
+                appdir=args.appdir,
+                description=args.description,
+            )
 
             app_config = AppConfig.for_name(args.app)
             folder_name = "report-latest"
@@ -253,7 +272,9 @@ if len(sys.argv) > 0 and "main.py" in sys.argv[0]:
             if args.publish:
                 branch = git_active_branch(args.appdir)
                 print("Choose a filename to publish local to S3")
-                folder_name = prompt_with_prefill("Enter filename for published report: ", f"report-{branch}")
+                folder_name = prompt_with_prefill(
+                    "Enter filename for published report: ", f"report-{branch}"
+                )
 
                 s3_prefix = f"srt/{args.app}/{folder_name}"
                 report_url = f"https://research-catalog-stats.s3.amazonaws.com/{s3_prefix}/index.html"
@@ -284,6 +305,6 @@ if len(sys.argv) > 0 and "main.py" in sys.argv[0]:
 
         if args.command == "lambda-event":
             event = None
-            with open(args.event_file, 'r') as f:
+            with open(args.event_file, "r") as f:
                 event = json.load(f)
             response = lambda_handler(event, {})

@@ -49,7 +49,10 @@ class AppConfig:
 
         outfile = "/tmp/es-config"
         shell_exec(
-            "bash", os.path.join(self.local_config_path(), 'get-config.sh'), path, outfile
+            "bash",
+            os.path.join(self.local_config_path(), "get-config.sh"),
+            path,
+            outfile,
         )
 
         with open(outfile) as f:
@@ -59,7 +62,7 @@ class AppConfig:
         return es_config
 
     def local_config_path(self):
-        return f'./applications/{self.app_name}'
+        return f"./applications/{self.app_name}"
 
     def jsonable(self):
         return {"app_name": self.app_name}
