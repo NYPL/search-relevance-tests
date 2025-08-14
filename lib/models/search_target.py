@@ -23,6 +23,7 @@ class SearchTarget:
             )
             .replace("'", "-apos-")
             .replace('"', "-quot-")
+            .replace('?', "-quest-")
             .replace(" ", "_")
         )
 
@@ -46,10 +47,6 @@ class SearchTarget:
 
     @staticmethod
     def from_json(json):
-        # print(f"SearchTarget.from_json relevant = {json['relevant']}")
-        # for bnum in json["relevant"]:
-        #     print(f"bnum: {type(bnum)}: {bnum}")
-
         return SearchTarget(
             q=json["q"],
             search_scope=json["search_scope"],

@@ -1,6 +1,9 @@
 import os
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
+from nypl_py_utils.functions.log_helper import create_log
+
+logger = create_log('S3')
 
 
 def create_graph(labels, scores, elapsed, key, **kwargs):
@@ -21,7 +24,7 @@ def create_graph(labels, scores, elapsed, key, **kwargs):
     # Primary graph:
     path = f'{kwargs["basedir"]}/graphs/{key}.png'
     if not os.path.exists(path) or kwargs.get('rebuild', False):
-        print(f"  Creating figure: {path}")
+        logger.info(f"  Creating figure: {path}")
 
         blue = "blue"
         red = "red"
@@ -55,7 +58,7 @@ def create_graph(labels, scores, elapsed, key, **kwargs):
     # Thumb:
     path = f'{kwargs["basedir"]}/graphs/{key}-thumb.png'
     if not os.path.exists(path) or kwargs.get('rebuild', False):
-        print(f"    Creating fig. thumb: {path}")
+        logger.info(f"    Creating fig. thumb: {path}")
         thumb_vals = scores[-3:]
 
         x_ticks = [ind + 1 for ind, v in enumerate(thumb_vals)]

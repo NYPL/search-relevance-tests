@@ -1,0 +1,189 @@
+    body { font-family: sans-serif; }
+    textarea { display:none; height:1px !important; width:1px !important; opacity:0 }
+    a.copy-to-clipboard::before { content: "\\01F4CB "; }
+    a.copy-to-clipboard:active::before { content: "\\2705 "; }
+    span.score, span.elapsed { display: inline-block; color: white; padding: 2px 7px; border-radius: 5px;, font-size: 0.85em; }
+    span.score { background-color: {{colors.blue}}; }
+    span.elapsed {
+      margin-left: 4px;
+      background-color: {{colors.red}};
+    }
+
+    a {
+      color: #0069BF;
+      text-decoration:none;
+    }
+    a:hover {
+      text-decoration:underline;
+    }
+
+    #left-nav {
+      top: 0;
+      bottom: 0;
+      width: 400px;
+      overflow: auto;
+      position: fixed;
+      padding-bottom: 100px;
+    }
+
+    #left-nav ul {
+      padding-left: 0
+    }
+
+    #left-nav li { 
+      list-style: none;
+      clear: both;
+      padding-left: 0;
+    }
+
+    #left-nav a { 
+      text-decoration: none;
+      color: #555;
+    }
+
+    #left-nav a img { 
+      width: auto;
+      margin-right: 10px;
+      float: left;
+    }
+
+    #left-nav a span { 
+      display: block;
+      width: 300px;
+      float: left;
+    }
+
+
+    #main {
+      position: absolute;
+      left: 420px;
+      right: 20px;
+      padding-bottom:100px;
+    }
+
+    h2 {
+      padding-top: 20px;
+    }
+
+
+    .collapsible-heading {
+      cursor: pointer;
+      border: none;
+      text-align: left;
+      outline: none;
+      padding: 6px 26px;
+      border: solid #C4C4C4 1px;
+      border-top-width: 0;
+    }
+
+    .target-run-heading {
+      text-overflow: ellipsis;
+      width: 400px;
+      overflow: hidden;
+      display: inline-block;
+      white-space: nowrap;
+      position: relative;
+      top: 4px
+    }
+
+    .collapsible-heading:first-of-type {
+      border-top-width: 1px;
+    }
+
+    .collapsible-heading.active, .collapsible-heading:hover {
+      border: solid #616161 1px;
+      background-color: #E9E9E9;
+    }
+
+    .collapsible-content {
+      padding: 0 18px;
+      display: none;
+      overflow: hidden;
+      border: solid #C4C4C4 1px;
+      border-top: none;
+    }
+
+    .hit-found-icon {
+      display: inline-block;
+      width: 30px;
+    }
+
+    .within-metric:not(:has(~ .within-metric)):not(:last-of-type) {
+      border-bottom: dashed gray 2px;
+      padding-bottom: 12px;
+      margin-bottom: 12px;
+    }
+
+    .within-metric:not(:has(~ .within-metric)):not(:last-of-type)::after {
+      content: "metric boundary";
+      display: block;
+      position: relative;
+      top: 10px;
+      font-size: 12px;
+    }
+
+    ul.target-runs, ul.runs-summary {
+      list-style: none;
+    }
+
+    ul.target-runs > li {
+      display: block;
+    }
+
+    ul.runs-summary li {
+      padding: 0.5em;
+    }
+
+    label.highlights-control-label {
+      padding-left: 3em;
+    }
+
+    ul.highlights {
+      margin-left: 3em;
+      display: none;
+      list-style: none;
+      padding: 0.3em 0 1em;
+    }
+
+    ul.highlights li {
+      padding-bottom: 0.1em;
+    }
+
+    ul.highlights li span {
+      padding-right: 0.5em;
+      font-weight: bold;
+    }
+
+    ul.highlights li em {
+      background-color: #F9E08E;
+      font-style: normal;
+    }
+
+    .animate-opacity {
+      @starting-style {
+        opacity: 0;
+      }
+      
+      transition-property: display, opacity;
+      transition-duration: 0.2s;
+      transition-behavior: allow-discrete;
+    }
+
+    .plus {
+      width: auto;
+      float: right;
+      font-size: 20px;
+    }
+
+    .notification {
+      background-color: #F9E08E;
+      padding: 1rem 2rem;
+      margin: 1rem 0;
+      line-height: 2rem;
+    }
+
+    .notification svg {
+      width: 24px;
+      float: left;
+      margin-right: 10px;
+    }

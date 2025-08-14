@@ -4,6 +4,11 @@ import io
 import os
 import mimetypes
 
+from nypl_py_utils.functions.log_helper import create_log
+
+
+logger = create_log('S3')
+
 
 def write_to_s3(key, data, public=False):
     bucket = S3BucketWrapper("research-catalog-stats")
@@ -17,14 +22,14 @@ def get_from_s3(remote_path, local_path):
 
 
 def upload_dir(source_path, prefix, public=False, exclude=[]):
-    print(f"Uploading {source_path} to {prefix}")
+    logger.info(f"Uploading {source_path} to {prefix}")
     bucket = S3BucketWrapper("research-catalog-stats")
     acl = "public-read" if public else "private"
     bucket.upload_dir_s3(source_path, prefix, acl=acl, exclude=exclude)
 
 
 def download_dir(prefix, local_path):
-    print(f"Downloading {prefix} to {local_path}")
+    logger.info(f"Downloading {prefix} to {local_path}")
     bucket = S3BucketWrapper("research-catalog-stats")
     bucket.download_dir(prefix, local_path)
 
@@ -66,14 +71,14 @@ class S3BucketWrapper:
             try:
                 put_data = open(data, "rb")
             except IOError:
-                print(f"Expected file name or binary data, got '{data}'.")
+                logger.error(f"Expected file name or binary data, got '{data}'.")
                 raise
 
         try:
             s3_object.put(Body=put_data, ACL=acl, ContentType="text/html")
             s3_object.wait_until_exists()
         except botocore.exceptions.ClientError:
-            print(
+            logger.error(
                 f"Couldn't put object '{s3_object.key} to bucket {s3_object.bucket_name}"
             )
             raise
@@ -101,7 +106,6 @@ class S3BucketWrapper:
                         os.makedirs(os.path.dirname(local_path + os.sep + key_relative))
                     full_local_path = local_path + os.sep + key_relative
                     s3_path = file.get("Key")
-                    # print(f"self.resource.meta.client.download_file({self.bucket_name}, {s3_path}, {full_local_path})")
                     self.resource.meta.client.download_file(
                         self.bucket_name, s3_path, full_local_path
                     )
@@ -120,15 +124,13 @@ class S3BucketWrapper:
 
                 file_mime_type, _ = mimetypes.guess_type(local_path)
                 try:
-                    # print("Uploading %s..." % s3_path)
-                    # print(f"self.client.upload_file({local_path}, {self.bucket_name}, {s3_path})")
                     extra = {"ACL": acl, "ContentType": file_mime_type}
                     if file_mime_type is None:
-                        print(
+                        logger.warn(
                             f"Skipping uploading {local_path} because unrecognized content-type"
                         )
                     elif filename in exclude:
-                        print(f"  Skipping uploading {filename}")
+                        logger.debug(f"  Skipping uploading {filename}")
                     else:
                         self.client.upload_file(
                             local_path, self.bucket_name, s3_path, ExtraArgs=extra
@@ -139,7 +141,7 @@ class S3BucketWrapper:
                     # except:
                     #    print "Unable to delete %s..." % s3_path
                 except Exception as e:
-                    print(f"Failed to upload {local_path} to {s3_path}: {e}")
+                    logger.error(f"Failed to upload {local_path} to {s3_path}: {e}")
 
         self.remove_stale_directories(dst_prefix, source_dir)
 
@@ -165,5 +167,4 @@ class S3BucketWrapper:
                     s3_path = file.get("Key")
                     exists = os.path.isfile(full_local_path)
                     if not exists:
-                        # print(f"Removing {s3_path} because {full_local_path} doesnt exist")
                         self.client.delete_object(Bucket=self.bucket_name, Key=s3_path)

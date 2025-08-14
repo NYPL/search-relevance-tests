@@ -12,6 +12,7 @@ class SearchTargetResponse:
         self.matching_documents = kwargs.get("matching_documents")
         self.count = kwargs["count"]
         self.raw = kwargs.get("raw")
+        self.response = kwargs.get("response")
 
         report = None
         if kwargs.get("response"):
@@ -31,7 +32,7 @@ class SearchTargetResponse:
                 self.found = len([h for h in self.hits if h["found"]])
 
         self.hits_length = 0
-        if report.get("metric_details") is not None:
+        if report is not None and report.get("metric_details") is not None:
             self.hits_length = list(report["metric_details"].values())[0].get(
                 "relevant_docs_retrieved"
             )
@@ -44,13 +45,21 @@ class SearchTargetResponse:
     def elapsed_formatted(self):
         return format_float(self.ellpased)
 
+    def jsonable(self):
+        return {
+            "response": dict(self.response),
+            "target": self.target.jsonable(),
+            "elapsed": self.elapsed,
+            "matching_documents": self.matching_documents,
+            "count": self.count,
+        }
+
     @staticmethod
-    def from_json(obj, **kwargs):
-        # print(f"RunResponse.from_json {obj}")
+    def from_json(obj, run=None):
         props = {**obj}
-        props["target"] = SearchTarget.from_json(obj["target"])
-        # print(f"SearchTargetResponse from: {json.dumps(obj, indent=2)}")
-        props["run"] = kwargs["run"]
+        props["target"] = obj["target"] if type(obj["target"]) == SearchTarget \
+            else SearchTarget.from_json(obj.get("target"))
+        props["run"] = run
         props["raw"] = obj
         search_target_response = SearchTargetResponse(**props)
         return search_target_response

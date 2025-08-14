@@ -1,7 +1,29 @@
+from datetime import datetime
+import os
+import pystache
 import requests
 
 from lib.file_cache_decorator import file_cached
-from lib.utils import format_float, average_by_index, local_application_file
+from lib.utils import average_by_index
+from lib.filestore import upload_dir
+from nypl_py_utils.functions.log_helper import create_log
+
+logger = create_log('S3')
+
+
+def upload_pending_report(path, log, done=False):
+    basedir = "/tmp/srt/pending-report"
+    os.makedirs(basedir, exist_ok=True)
+    template_vars = {
+        "log": log,
+        "build_time": datetime.now().strftime("%c"),
+        "working": not done
+    }
+    renderer = pystache.Renderer(search_dirs="./templates")
+    html = renderer.render("{{>pending_report}}", template_vars)
+    with open(f"{basedir}/index.html", "w") as f:
+        f.write(html)
+    upload_dir(basedir, f"srt/{path}/", public=True)
 
 
 def normalize_run_data(results):
@@ -47,7 +69,7 @@ def basic_bib_metadata(bnum):
         url = f"https://platform.nypl.org/api/v0.1/discovery/resources/{bnum}"
         doc = requests.get(url).json()
     except requests.exceptions.RequestException as e:
-        print(f"Requests error: {e}")
+        logger.error(f"Requests error: {e}")
         return {"bnum": bnum, "missing": True}
 
     title = None

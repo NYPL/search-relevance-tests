@@ -1,39 +1,31 @@
-import csv
 from datetime import datetime
-import json
 import os
 import pystache
 
 from lib.models.run import Run
-from lib.models.search_target import SearchTarget
+from lib.models.app_config import AppConfig
 from lib.graphs import create_graph
-from lib.utils import format_float, average_by_index, local_application_file
+from lib.utils import format_float
 from lib.report_utils import normalize_run_data, normalize_overall_run_data
-from lib.filestore import upload_dir, download_dir
+from lib.filestore import upload_dir
+from nypl_py_utils.functions.log_helper import create_log
 
 
 class Report:
     def __init__(self, app: str):
-        self.app = app
+        self.app_config = AppConfig.for_name(app)
 
-        self.targets = []
         self.runs = []
 
-        self._official_commits = None
+        self.logger = create_log(__name__)
 
     def jsonable(self):
         return {"app": self.app}
 
-    def load_targets(self, **kwargs):
-        path = local_application_file(self.app, "targets.yaml")
-
-        self.targets = SearchTarget.load_all_from(path)
-
-        if kwargs.get("rows", None) is not None:
-            self.targets = [self.targets[r] for r in kwargs["rows"]]
-
     def add_run(self, base_dir, description):
-        self.runs.append(Run.for_path(self, base_dir, description))
+        run = Run.for_path(self, base_dir, description)
+        self.runs.append(run)
+        return run
 
     def previous_run_for(self, run, previous_runs):
         for previous_run in previous_runs:
@@ -43,7 +35,7 @@ class Report:
     def collect_data(self, **kwargs):
         previous_runs = self.load_runs_from_manifests()
 
-        basedir = f"/tmp/srt/{self.app}/manifests"
+        basedir = self.app_config.local_temp_path("manifests")
         stale_manifests = set([
             run.manifest_file_path(basedir) for run in previous_runs
             if run.commit_id not in [
@@ -51,84 +43,43 @@ class Report:
             ]
         ])
         for path in stale_manifests:
-            print(f"  Consider removing stale run not found in commits.csv: {path}")
+            self.logger.info(f"  Consider removing stale run not found in commits.csv: {path}")
             # TODO: This was deleting things too aggressively, so disabling for now:
             # os.remove(path)
 
         for ind, run in enumerate(self.runs):
-            print(f"Run {ind + 1} of {len(self.runs)}")
+            self.logger.info(f"Run {ind + 1} of {len(self.runs)}")
 
             previous_run = None if kwargs.get('rebuild') else self.previous_run_for(run, previous_runs)
             run.collect_data(previous_run)
 
     def save_manifests(self):
-        print("Saving and uploading manifests")
-        basedir = f"/tmp/srt/{self.app}/manifests"
+        self.logger.info("Saving and uploading manifests")
+        basedir = self.app_config.local_temp_path("manifests")
         [run.save_manifest(basedir) for run in self.runs]
 
-        upload_dir(basedir, f"srt/{self.app}/manifests", exclude=["current.json"])
-
-    def official_commits(self):
-        if self._official_commits is None:
-            path = local_application_file(self.app, "commits.csv")
-            with open(path) as f:
-                self._official_commits = [row for row in csv.DictReader(f)]
-        return self._official_commits
+        upload_dir(basedir, f"srt/{self.app_config.app_name}/manifests", exclude=["local.json", "latest.json"])
 
     def add_registered_runs(self):
         official_commit_runs = [
             Run.for_commit(self, c["commit"], c["description"])
-            for c in self.official_commits()
+            for c in self.app_config.official_commits()
         ]
         self.runs.extend(official_commit_runs)
 
-    def load_from_manifests(self, include_local=False):
-        self.runs = self.load_runs_from_manifests(include_local=include_local)
+    def load_runs_from_manifests(self, include_local=False, include_latest=False):
+        self.runs = Run.all_from_manifests(self.app_config, include_local=include_local, include_latest=include_latest)
+        return self.runs
 
-    def load_runs_from_manifests(self, include_local=False):
-        directory = f"/tmp/srt/{self.app}/manifests"
-        download_dir(f"srt/{self.app}/manifests", directory)
-
-        commits = self.official_commits()
-
-        manifest_paths = []
-        for file in os.listdir(directory):
-            filename = os.fsdecode(file)
-            is_official_commit = filename not in [f'{c["commit"]}.json' for c in commits]
-            is_permitted_local = filename == 'current.json' and include_local
-            if is_official_commit and not is_permitted_local:
-                print(f'Not including manifest {filename} because not in official commits.')
-
-            elif filename.endswith(".json"):
-                manifest_paths.append(os.path.join(str(directory), filename))
-
-        manifests = []
-        for path in manifest_paths:
-            with open(path) as f:
-                manifests.append(json.loads(f.read()))
-
-        manifests.sort(key=lambda manifest: manifest["commit_date"])
-
-        runs = []
-        for ind, manifest in enumerate(manifests):
-            previous_commit_id = manifests[ind - 1]["commit_id"] if ind > 0 else None
-            run = Run.from_json(self, manifest, previous_commit_id=previous_commit_id)
-            runs.append(run)
-
-        for ind, run in enumerate(runs):
-            print(
-                f"Loaded run: {manifest_paths[ind]} - {run.commit_date} - {len(run.responses)} responses"
-            )
-        return runs
-
-    def build(self, **kwargs):
+    def build(self, folder_name="report", **kwargs):
         palette = {"red": "#920711", "blue": "#00838a", "orange": "#EC7B1F"}
 
-        basedir = f"/tmp/srt/{self.app}/report"
+        basedir = self.app_config.local_temp_path(folder_name)
+        self.logger.info(f'Building report in {basedir}')
 
         os.makedirs(f"{basedir}/graphs", exist_ok=True)
 
-        self.load_targets()
+        targets = self.app_config.load_targets()
 
         targets_with_runs = [
             {
@@ -136,7 +87,7 @@ class Report:
                 "number": i + 1,
                 "results": self.results_by_target(target),
             }
-            for i, target in enumerate(self.targets)
+            for i, target in enumerate(targets)
         ]
         targets_with_runs = [r for r in targets_with_runs if len(r["results"]) > 0]
 
@@ -151,8 +102,8 @@ class Report:
 
             scores, elapsed, elapsed_relative, counts = normalize_run_data(results)
             if len(scores) != len(self.runs):
-                print(f'\nFound error in manifests: Expected {len(self.runs)} scores for target {target}; Found {len(scores)}')
-                exit()
+                self.logger.error(f'\nFound error in manifests: Expected {len(self.runs)} scores for target {target}; Found {len(scores)}. Exiting')
+                exit(1)
 
             create_graph(
                 app_versions,
@@ -189,11 +140,23 @@ class Report:
         ]
         renderer = pystache.Renderer(search_dirs="./templates")
 
-        local_note = False
+        official_report_url = "https://research-catalog-stats.s3.amazonaws.com/srt/discovery-api/report/index.html"
+        alert = None
         if kwargs.get('include_local'):
             for run in self.runs:
                 if run.is_local():
-                    local_note = run.commit_description
+                    alert = (
+                        f'This is a candidate search relevancy report for: "{run.commit_description}". '
+                        f' The current <em>official</em> report <a href="{official_report_url}">'
+                        'is here</a>.'
+                    )
+        if kwargs.get("include_latest"):
+            for run in self.runs:
+                if run.is_latest():
+                    alert = (
+                        "This is a search relevancy report showing scoring differences between the "
+                        f'<a href="{run.change_url()}">last official commit and `main`</a>.'
+                    )
 
         template_vars = {
             "report_id": datetime.now(),
@@ -201,7 +164,7 @@ class Report:
             "colors": palette,
             "run_summary": as_json(run_summary),
             "targets": as_json(targets_with_runs),
-            "local_note": local_note
+            "alert": alert
         }
         html = renderer.render("{{>report}}", template_vars)
 
@@ -209,7 +172,7 @@ class Report:
             f.write(html)
 
         if kwargs.get("persist_to_s3", True):
-            upload_dir(basedir, f"srt/{self.app}/report/", public=True)
+            upload_dir(basedir, f"srt/{self.app_config.app_name}/{folder_name}/", public=True)
 
     def results_by_target(self, target):
         results = []

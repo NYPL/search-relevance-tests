@@ -1,9 +1,11 @@
 import subprocess
 import readline
 
-# import os
+from nypl_py_utils.functions.log_helper import create_log
 from pathlib import Path
 import urllib.request
+
+logger = create_log('utils')
 
 
 def prompt_with_prefill(prompt, text):
@@ -54,7 +56,7 @@ def local_application_file(app, path):
         "/NYPL/search-relevance-tests/refs/heads/main"
         f"/applications/{app}/{path}"
     )
-    print(f"Loading {path} from {url}")
+    logger.debug(f"Loading {path} from {url}")
     download_file(
         url,
         local_path,
@@ -69,3 +71,4 @@ def download_file(url, local_path):
     source = urllib.request.urlopen(url)
     with open(local_path, "wb") as f:
         f.write(source.read())
+        logger.debug(f'  Wrote {url} to {local_path}')
