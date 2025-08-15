@@ -1,6 +1,7 @@
 from datetime import datetime
 import os
 import pystache
+from nypl_py_utils.functions.log_helper import create_log
 
 from lib.models.run import Run
 from lib.models.app_config import AppConfig
@@ -8,7 +9,6 @@ from lib.graphs import create_graph
 from lib.utils import format_float
 from lib.report_utils import normalize_run_data, normalize_overall_run_data
 from lib.filestore import upload_dir
-from nypl_py_utils.functions.log_helper import create_log
 
 
 class Report:

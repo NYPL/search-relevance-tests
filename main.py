@@ -79,6 +79,12 @@ def lambda_handler(event, context):
 
             logger.info(f"Webhook validated; Proceeding with test-latest for {app}")
 
+            # Validate branch:
+            ref = body["ref"]
+            if ref != "refs/heads/main":
+                logger.info(f"Skipping push to {body['ref']}")
+                return
+
             return run_test_latest(app=app)
         except AppConfigException as e:
             return lambda_error(400, e)
@@ -308,3 +314,4 @@ if len(sys.argv) > 0 and "main.py" in sys.argv[0]:
             with open(args.event_file, "r") as f:
                 event = json.load(f)
             response = lambda_handler(event, {})
+            print(f"Lambda response: {response}")

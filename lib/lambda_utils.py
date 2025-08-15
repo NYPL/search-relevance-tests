@@ -47,4 +47,5 @@ def validate_webhook(event):
 
 
 def lambda_error(status, error):
+    logger.error(f"Lambda error: {str(error)}")
     return {"statusCode": status, "message": str(error)}

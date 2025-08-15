@@ -23,7 +23,6 @@ class SearchTargetResponse:
                 self.hits = [
                     {"bnum": hit["hit"]["_id"], "found": hit.get("rating") is not None}
                     for hit in report["hits"]
-                    # if hit.get("rating", None) is not None
                 ]
                 self.hits = [
                     {**hit, **basic_bib_metadata(hit["bnum"])} for hit in self.hits

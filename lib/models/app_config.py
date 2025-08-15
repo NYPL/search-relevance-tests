@@ -1,6 +1,7 @@
 import csv
 import json
 import os
+import yaml
 
 from lib.utils import local_application_file
 from lib.models.search_target import SearchTarget
@@ -17,7 +18,20 @@ class AppConfig:
         self.app_name = app_name
 
         self._official_commits = None
+        self._config = None
+
         self.logger = create_log(__name__)
+
+    def config(self):
+        if self._config is None:
+            try:
+                path = local_application_file(self.app_name, "config.yaml")
+            except Exception:
+                raise AppConfigException(f"Error fetching {self.app_name}/targets.yaml")
+
+            with open(path) as f:
+                self._config = yaml.safe_load_all(f)
+        return self._config
 
     def load_targets(self, **kwargs):
         try:
