@@ -20,3 +20,4 @@ The application folder should contain the following files:
  - `notes`: An array of notes explaning the premise, origin, expectations of the target.
 
 More TK
+
