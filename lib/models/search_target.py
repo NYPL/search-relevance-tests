@@ -7,6 +7,9 @@ class SearchTarget:
     def __init__(self, **kwargs):
         self.q = kwargs["q"]
         self.search_scope = kwargs["search_scope"]
+        self.rc_search_scope = (
+            "keyword" if self.search_scope == "all" else self.search_scope
+        )
         self.metric = kwargs["metric"]
         self.metric_at = kwargs["metric_at"]
         self.relevant = kwargs["relevant"]
@@ -27,8 +30,14 @@ class SearchTarget:
             .replace(" ", "_")
         )
 
-        self.qa_url = f"https://qa-www.nypl.org/research/research-catalog/search?q={self.q}&search_scope={self.search_scope}"
-        self.production_url = f"https://www.nypl.org/research/research-catalog/search?q={self.q}&search_scope={self.search_scope}"
+        self.qa_url = (
+            "https://qa-www.nypl.org/research/research-catalog/search"
+            f"?q={self.q}&search_scope={self.search_scope}"
+        )
+        self.production_url = (
+            "https://www.nypl.org/research/research-catalog/search"
+            f"?q={self.q}&search_scope={self.search_scope}"
+        )
 
     def relevant_records(self):
         return [basic_bib_metadata(bnum) for bnum in self.relevant]

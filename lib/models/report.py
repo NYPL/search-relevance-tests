@@ -116,7 +116,8 @@ class Report:
             scores, elapsed, elapsed_relative, counts = normalize_run_data(results)
             if len(scores) != len(self.runs):
                 self.logger.error(
-                    f"\nFound error in manifests: Expected {len(self.runs)} scores for target {target}; Found {len(scores)}. Exiting"
+                    f"\nFound error in manifests: Expected {len(self.runs)} scores for target {target};"
+                    f"Found {len(scores)}. Exiting"
                 )
                 exit(1)
 

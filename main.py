@@ -80,9 +80,12 @@ def lambda_handler(event, context):
             logger.info(f"Webhook validated; Proceeding with test-latest for {app}")
 
             # Validate branch:
-            ref = body["ref"]
+            ref = body.get("ref")
+            if ref is None:
+                logger.info("No git ref found in webhook payload")
+                return
             if ref != "refs/heads/main":
-                logger.info(f"Skipping push to {body['ref']}")
+                logger.info(f"Skipping push to {ref}")
                 return
 
             return run_test_latest(app=app)
@@ -272,7 +275,8 @@ if len(sys.argv) > 0 and "main.py" in sys.argv[0]:
             )
 
             app_config = AppConfig.for_name(args.app)
-            folder_name = "report-latest"
+            folder_name = "report-local"
+            report_url = f"/tmp/srt/{args.app}/{folder_name}/index.html"
 
             # If publishing report to S3, get a more approrpiate folder_name:
             if args.publish:

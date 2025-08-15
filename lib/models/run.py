@@ -44,7 +44,7 @@ class Run:
         return self.file_key == "latest"
 
     def app_version(self):
-        if self.file_key in ["latest", "candidate"]:
+        if self.file_key in ["latest", "local"]:
             return self.file_key.upper()
         official_commit_ids = [c["commit"] for c in self.app_config.official_commits()]
         if self.commit_id not in official_commit_ids:
