@@ -9,7 +9,6 @@ if (fs.existsSync('node_modules/@aws-sdk/credential-providers')) {
   fromIni = require('@aws-sdk/credential-providers').fromIni
 }
 
-
 process.env.ENV = process.env.ENV || 'production'
 
 if (fromIni) {

@@ -13,7 +13,7 @@ aws ecr get-login-password \
     --username AWS \
     --password-stdin ${ACCOUNT}.dkr.ecr.${REGION}.amazonaws.com
 
-docker buildx build --platform linux/amd64 -t ${REGISTRY}/${REPO}:${IMAGE_ID} --target lambda .
+docker buildx build --platform linux/amd64 -t ${REGISTRY}/${REPO}:${IMAGE_ID} --target lambda --provenance=false .
 docker push ${REGISTRY}/${REPO}:${IMAGE_ID}
 docker tag ${REGISTRY}/${REPO}:${IMAGE_ID} ${REGISTRY}/${REPO}:${ENVIRONMENT}
 docker push ${REGISTRY}/${REPO}:${ENVIRONMENT}

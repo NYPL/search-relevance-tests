@@ -1,11 +1,14 @@
 VENV_DIR := .venv
 
-venv:
-	python -m venv $(VENV_DIR)
-	$(source $(VENV_DIR)/bin/activate)
-	pip install --upgrade pip
-	pip install -r requirements.txt
-	pip install -r dev-requirements.txt
+venv: $(VENV_DIR)/touchfile
+
+$(VENV_DIR)/touchfile: requirements.txt dev-requirements.txt
+	test -d $(VENV_DIR) || virtualenv $(VENV_DIR)
+	. $(VENV_DIR)/bin/activate
+	pip3 install --upgrade pip
+	pip3 install -r requirements.txt
+	pip3 install -r dev-requirements.txt
+	touch $(VENV_DIR)/touchfile
 
 lint:
 	black .

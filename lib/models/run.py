@@ -15,12 +15,12 @@ from nypl_py_utils.functions.log_helper import create_log
 class Run:
     def __init__(self, **kwargs):
         self.app_config = kwargs["app_config"]
-        self.commit_id = kwargs.get("commit_id", None)
+        self.base_dir = kwargs.get("base_dir", self.app_config.local_temp_path("app"))
+        self.commit_id = kwargs.get("commit_id", self.get_commit_id())
         self.previous_commit_id = kwargs.get("previous_commit_id", None)
         self.commit_description = kwargs.get("commit_description", None)
         self.explicit_base_dir = kwargs.get("base_dir", None) is not None
         self.file_key = kwargs.get("file_key", self.commit_id)
-        self.base_dir = kwargs.get("base_dir", self.app_config.local_temp_path("app"))
         self.commit_date = kwargs.get("commit_date", None)
         self.run_date = kwargs.get("run_date", None)
 

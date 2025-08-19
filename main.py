@@ -207,7 +207,7 @@ def run_test_latest(**kwargs):
             logger.info(f"Scores changed: {explanation}")
             run.save_manifest()
             rebuild_report(
-                app=args.app,
+                app=kwargs["app"],
                 include_latest=True,
                 rebuild_graphs=args.rebuild_graphs,
                 persist_to_s3=args.persist_to_s3,
