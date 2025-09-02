@@ -525,3 +525,12 @@ relevant:
 metric: recall
 metric_at: 2
 ---
+q: columbus the story of a city lentz
+search_scope: keyword
+notes:
+  - DBR0001164
+relevant:
+  - b16576913
+metric: recall
+metric_at: 1
+---
