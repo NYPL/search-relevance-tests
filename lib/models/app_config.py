@@ -55,7 +55,7 @@ class AppConfig:
     def local_temp_path(self, folder=None):
         basedir = os.path.join(os.sep, "tmp", "srt", self.app_name)
         if folder is not None:
-            return os.path.join(basedir, folder)
+            basedir = os.path.join(basedir, folder)
         os.makedirs(basedir, exist_ok=True)
         return basedir
 
