@@ -175,10 +175,10 @@ def run_test_latest(**kwargs):
             upload_pending_report(f"{app_config.app_name}/report-latest", log, done)
 
         checkout_base_dir = app_config.local_temp_path("app")
+        last_run = Run.all_from_manifests(app_config)[-1]
         run = Run.for_path(
             app_config, checkout_base_dir, "Latest main branch", file_key="latest"
         )
-        last_run = Run.all_from_manifests(app_config)[-1]
 
         git_url = f"https://github.com/NYPL/discovery-api/compare/{last_run.commit_id}...{run.get_commit_id()}"
         log_progress(
@@ -209,8 +209,8 @@ def run_test_latest(**kwargs):
             rebuild_report(
                 app=kwargs["app"],
                 include_latest=True,
-                rebuild_graphs=args.rebuild_graphs,
-                persist_to_s3=args.persist_to_s3,
+                rebuild_graphs=kwargs.get("rebuild_graphs", True),
+                persist_to_s3=kwargs.get("persist_to_s3", True),
                 folder_name="report-latest",
             )
     except Exception as e:
@@ -301,7 +301,12 @@ if len(sys.argv) > 0 and "main.py" in sys.argv[0]:
         if args.command == "test-all":
             run_test_all(app=args.app, rows=rows, rebuild=args.rebuild)
         if args.command == "test-latest":
-            run_test_latest(app=args.app, rows=rows)
+            run_test_latest(
+                app=args.app,
+                rows=rows,
+                rebuild_graphs=args.rebuild_graphs,
+                persist_to_s3=args.persist_to_s3,
+            )
         if args.command == "rebuild-report":
             rebuild_report(
                 app=args.app,

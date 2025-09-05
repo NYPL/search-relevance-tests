@@ -56,6 +56,7 @@ class AppConfig:
         basedir = os.path.join(os.sep, "tmp", "srt", self.app_name)
         if folder is not None:
             return os.path.join(basedir, folder)
+        os.makedirs(basedir, exist_ok=True)
         return basedir
 
     def load_es_config(self, path: str, **kwargs):
