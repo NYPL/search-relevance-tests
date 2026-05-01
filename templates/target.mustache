@@ -1,0 +1,33 @@
+<a name="{{target.key}}"></a>
+
+<h2>{{number}}. {{target.search_scope}} "{{target.q}}": {{target.metric}}@{{target.metric_at}}</h2>
+
+{{#target.notes}}
+  <p>{{{.}}}</p>
+{{/target.notes}}
+
+Search:
+ <a href="{{target.qa_url}}" target="_blank">QA</a>
+ | <a href="{{target.production_url}}" target="_blank">Prod</a>
+
+<h3>Target records</h3>
+<ul>
+  {{#target.relevant_records}}
+    {{#missing}}
+      <li><s>{{bnum}}</s>: (Missing)</li>
+    {{/missing}}
+    {{^missing}}
+      <li><a href="https://www.nypl.org/research/research-catalog/bib/{{bnum}}">{{bnum}}: {{title}}{{#author}} ({{author}}){{/author}}</a></li>
+    {{/missing}}
+  {{/target.relevant_records}}
+</ul>
+
+<h3>App versions</h3>
+
+<img src="./graphs/{{target.key}}.png?report_id={{report_id}}" />
+
+<ul class="target-runs">
+  {{#results}}
+    <li>{{>target_run}}</li>
+  {{/results}}
+</ul>

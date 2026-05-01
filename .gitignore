@@ -1,0 +1,12 @@
+.venv
+.cache
+.DS_Store
+.aws-sam
+.terraform
+.terraform.lock.hcl
+__pycache__
+
+applications/*/builds
+applications/*/graphs
+applications/*/manifests
+applications/*/report.html

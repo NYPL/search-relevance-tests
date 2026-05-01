@@ -1,0 +1,16 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'sierra-retriever'
+
+Resources:
+  SearchRelevanceTests:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Image
+      Timeout: 300
+      MemorySize: 512
+    Metadata:
+      DockerTag: search-relevance-tests-test
+      DockerBuildTarget: lambda
+      DockerContext: .
+      Dockerfile: Dockerfile

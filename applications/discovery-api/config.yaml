@@ -1,0 +1,7 @@
+---
+branch: main
+# TODO: These aren't wired up yet:
+document_metadata_fields:
+ - 'title'
+ - 'creatorLiteral'
+---

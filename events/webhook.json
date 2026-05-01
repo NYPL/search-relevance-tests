@@ -1,0 +1,47 @@
+{
+   "body" : "{\"ref\": \"refs/heads/main\", \"repository\": {\"id\": 994972927, \"node_id\": \"R_kgDOO04U_w\", \"name\": \"search-relevance-tests\" }}",
+   "headers" : {
+      "accept" : "*/*",
+      "content-length" : "7587",
+      "content-type" : "application/json",
+      "host" : "2i3jfzlkd2kcvar2ardoxxvf6a0dlnrr.lambda-url.us-east-1.on.aws",
+      "user-agent" : "GitHub-Hookshot/V2-abf5423",
+      "x-amzn-tls-cipher-suite" : "TLS_AES_128_GCM_SHA256",
+      "x-amzn-tls-version" : "TLSv1.3",
+      "x-amzn-trace-id" : "Root=1-689ce594-2b294bfc0720e81e4183d5b4",
+      "x-forwarded-for" : "140.82.115.107",
+      "x-forwarded-port" : "443",
+      "x-forwarded-proto" : "https",
+      "x-github-delivery" : "9f58ad0c-787a-11f0-8208-711b0f602a35",
+      "x-github-event" : "ping",
+      "x-github-hook-id" : "563708489",
+      "x-github-hook-installation-target-id" : "994972927",
+      "x-github-hook-installation-target-type" : "repository",
+      "x-hub-signature" : "sha1=d0be04d4f9436a8f93b82dac3726312cf5167d6e",
+      "x-hub-signature-256" : "sha256=7359e61de6c9aedd0bd7f254200742343cd3f0e0bbcc91938eb35384b32e483f"
+   },
+   "isBase64Encoded" : false,
+   "rawPath" : "/",
+   "rawQueryString" : "",
+   "requestContext" : {
+      "accountId" : "anonymous",
+      "apiId" : "2i3jfzlkd2kcvar2ardoxxvf6a0dlnrr",
+      "domainName" : "2i3jfzlkd2kcvar2ardoxxvf6a0dlnrr.lambda-url.us-east-1.on.aws",
+      "domainPrefix" : "2i3jfzlkd2kcvar2ardoxxvf6a0dlnrr",
+      "http" : {
+         "method" : "POST",
+         "path" : "/",
+         "protocol" : "HTTP/1.1",
+         "sourceIp" : "140.82.115.107",
+         "userAgent" : "GitHub-Hookshot/V2-abf5423"
+      },
+      "requestId" : "a7647c2d-e089-4265-9398-72314ba29570",
+      "routeKey" : "$default",
+      "stage" : "$default",
+      "time" : "13/Aug/2025:19:20:52 +0000",
+      "timeEpoch" : 1755112852479
+   },
+   "routeKey" : "$default",
+   "version" : "2.0"
+}
+

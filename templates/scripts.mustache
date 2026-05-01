@@ -1,0 +1,52 @@
+function copyQueryToClipboard (queryId) {
+    const textarea = document.getElementById(queryId)
+    textarea.select()
+    try {
+        return document.execCommand("copy");  // Security exception may be thrown by some browsers.
+    } catch (ex) {
+        console.warn("Copy to clipboard failed.", ex);
+        return prompt("Copy to clipboard: Ctrl+C, Enter", text);
+    }
+}
+
+const applyCollapsibleSections = function () {
+  var coll = document.getElementsByClassName("collapsible-heading");
+  var i;
+
+  for (i = 0; i < coll.length; i++) {
+    var plus = document.createElement('span')
+    plus.textContent = '+'
+    plus.classList.add('plus')
+    coll[i].appendChild(plus)
+
+
+    coll[i].addEventListener("click", function() {
+      this.classList.toggle("active");
+      var content = this.nextElementSibling;
+      var plus = this.querySelector('.plus')
+      if (content.style.display === "block") {
+        content.style.display = "none";
+        plus.textContent = '+'
+      } else {
+        content.style.display = "block";
+        plus.textContent = '-'
+      }
+    });
+  }
+}
+
+const applyHighlightControls = function () {
+  var checkboxes = document.getElementsByClassName("highlights-control")
+  Array.from(checkboxes).forEach((input) => {
+    input.addEventListener("change", function (e) {
+      const highlights = this.closest('div').querySelectorAll("ul.highlights")
+      var checked = this.checked
+      Array.from(highlights).forEach((div) => {
+        div.style.display = checked ? 'block' : 'none'
+      })
+    })
+  })
+}
+
+window.addEventListener("load", applyCollapsibleSections)
+window.addEventListener("load", applyHighlightControls)
