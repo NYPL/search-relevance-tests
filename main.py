@@ -1,6 +1,7 @@
 import argparse
 import json
 import os
+import re
 import sys
 import traceback
 
@@ -146,6 +147,8 @@ def run_test_all(**kwargs):
     app_config = AppConfig.for_name(kwargs["app"])
     app_config.load_targets(rows=kwargs.get("rows", None))
 
+    Run.retrieve_manifests(app_config)
+
     runs = [
         Run.for_commit(app_config, c["commit"], c["description"])
         for c in app_config.official_commits()
@@ -172,7 +175,8 @@ def run_test_latest(**kwargs):
         def log_progress(message, done=False):
             logger.info(message)
             log.append(message)
-            upload_pending_report(f"{app_config.app_name}/report-latest", log, done)
+            if kwargs.get("persist_to_s3", True):
+                upload_pending_report(f"{app_config.app_name}/report-latest", log, done)
 
         checkout_base_dir = app_config.local_temp_path("app")
         last_run = Run.all_from_manifests(app_config)[-1]
@@ -256,10 +260,31 @@ def build_application_versions(**kwargs):
         run.package_app()
 
 
+def check_environment():
+    output = shell_exec("node", "--version")
+    major_version = None
+    try:
+        major_version = int(re.sub(r"^v", "", output).split(".")[0])
+    except Exception as e:
+        logger.error(f"Failed to identify local node version from '{output}': {e}")
+        exit()
+    if major_version < 18:
+        logger.error(
+            f"Found local node version {major_version}. Require at least Node 18"
+        )
+        exit()
+
+    logger.info(
+        f"Confirmed minimum Node version: Local default verion is {major_version}"
+    )
+
+
 # Detect invocation via CLI versus in a Lambda environment.
 # If filename is other than main.py, must be Lambda environment:
 if len(sys.argv) > 0 and "main.py" in sys.argv[0]:
     args = parse_args()
+
+    check_environment()
 
     if args.app and args.command:
         rows = None

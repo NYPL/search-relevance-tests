@@ -58,11 +58,15 @@ def local_application_file(app, path):
         f"/applications/{app}/{path}"
     )
     logger.debug(f"Loading {path} from {url}")
-    download_file(
-        url,
-        local_path,
-    )
-    return local_path
+    try:
+        download_file(
+            url,
+            local_path,
+        )
+        return local_path
+    except Exception as e:
+        print(f'Error retrieving {url}: {e}')
+        raise e
 
 
 def download_file(url, local_path):
