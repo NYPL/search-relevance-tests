@@ -5,5 +5,5 @@ matplotlib
 nypl-py-utils[s3-client,config-helper]
 pystache==0.6.8
 pyyaml
-requests==2.32.4
+requests==2.33.0
 
