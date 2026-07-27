@@ -36,6 +36,9 @@ def shell_exec(*_args, **kwargs):
 
 
 def average_by_index(two_d_array):
+    if len(two_d_array) == 0:
+        return None
+
     sums = two_d_array[0]
     for a in two_d_array[1:]:
         for ind, v in enumerate(a):

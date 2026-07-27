@@ -41,7 +41,7 @@ def parse_args():
             "lambda-event",
         ],
     )
-    parser.add_argument("-t", "--targets", default="targets.yaml")
+    parser.add_argument("-t", "--local-targets")
     parser.add_argument(
         "--no-persist-to-s3", dest="persist_to_s3", action="store_false"
     )
@@ -166,7 +166,7 @@ def run_test_all(**kwargs):
 
 def run_test_latest(**kwargs):
     app_config = AppConfig.for_name(kwargs["app"])
-    app_config.load_targets(rows=kwargs.get("rows", None))
+    app_config.load_targets(rows=kwargs.get("rows", None), local_targets=kwargs.get("local_targets", None))
 
     log = []
 
@@ -216,6 +216,7 @@ def run_test_latest(**kwargs):
                 rebuild_graphs=kwargs.get("rebuild_graphs", True),
                 persist_to_s3=kwargs.get("persist_to_s3", True),
                 folder_name="report-latest",
+                local_targets=kwargs.get("local_targets", None)
             )
     except Exception as e:
         log_progress(f"Error: {str(e)}", True)
@@ -239,6 +240,7 @@ def rebuild_report(**kwargs):
     if kwargs.get("include_latest", False):
         default_folder_name = "report-latest"
     folder_name = kwargs.get("folder_name", default_folder_name)
+    print(f'local? {kwargs.get('local_targets')}')
 
     report.build(
         rebuild_graphs=kwargs.get("rebuild_graphs", True),
@@ -246,6 +248,7 @@ def rebuild_report(**kwargs):
         folder_name=folder_name,
         include_local=kwargs.get("include_local"),
         include_latest=kwargs.get("include_latest"),
+        local_targets=kwargs.get("local_targets", None),
     )
 
 
@@ -331,6 +334,7 @@ if len(sys.argv) > 0 and "main.py" in sys.argv[0]:
                 rows=rows,
                 rebuild_graphs=args.rebuild_graphs,
                 persist_to_s3=args.persist_to_s3,
+                local_targets=args.local_targets
             )
         if args.command == "rebuild-report":
             rebuild_report(
@@ -339,6 +343,7 @@ if len(sys.argv) > 0 and "main.py" in sys.argv[0]:
                 rebuild_graphs=args.rebuild_graphs,
                 include_local=args.include_local,
                 include_latest=args.include_latest,
+                local_targets=args.local_targets,
             )
         if args.command == "build":
             build_application_versions(app=args.app)

@@ -11,6 +11,18 @@ notes:
   - "@3 ensures we find them all. Fragile though"
 reason: "initial target"
 ---
+q: keyword all "A Reader's Guide to Hart Craine's White Buildings"
+search_scope: cql
+metric: "precision"
+metric_at: 3
+relevant:
+  - "b11785956"
+  - "pb998308253506421"
+notes:
+  - "Misspelling of 'Crane' for 'Craine' "
+  - "@3 ensures we find them all. Fragile though"
+reason: "initial target"
+---
 q: "A Reader's Guide to Hart Craine's White Buildings"
 search_scope: "all"
 metric: "precision"
@@ -67,6 +79,16 @@ notes:
   - "Something we want to track and improve"
 reason: "initial target"
 ---
+q: title = "time magazine"
+search_scope: cql
+metric: "recall"
+metric_at: 50
+relevant:
+  - "b10682828"
+  - "b17394425"
+  - "b21462251"
+  - "b16542771"
+---
 q: "time"
 search_scope: "journal_title"
 metric: "recall"
@@ -89,6 +111,15 @@ relevant:
 notes:
   - "Should be better than 'sassy magazine'"
 reason: "initial target"
+---
+q: keyword all "sassy"
+search_scope: cql
+metric: "recall"
+metric_at: 50
+relevant:
+  - "b11612329"
+notes:
+  - "Should be better than 'sassy magazine'"
 ---
 q: "letter from tombs prison"
 search_scope: "title"
@@ -122,6 +153,15 @@ relevant:
   - "b14650132"
 reason: "initial target"
 ---
+q: author = "gold, leonard"
+search_scope: cql
+metric: "precision"
+metric_at: 3
+relevant:
+  - "b22141944"
+  - "b10002582"
+  - "b14650132"
+---
 q: "alexander, victor"
 search_scope: "contributor"
 metric: "recall"
@@ -141,6 +181,13 @@ relevant:
   - "b11151367"
 reason: "initial target"
 ---
+q: title = "journal of jewish studies"
+search_scope: cql
+metric: "precision"
+metric_at: 1
+relevant:
+  - "b11151367"
+---
 q: "East and West"
 search_scope: "journal_title"
 metric: "recall"
@@ -154,8 +201,30 @@ relevant:
   - "b15088556"
 reason: "initial target"
 ---
+q: title = "East and West"
+search_scope: cql
+metric: "recall"
+metric_at: 50
+relevant:
+  - "b11378929" 
+  - "b10988853"
+  - "b21433970"
+  - "b15276563"
+  - "b15087757"
+  - "b15088556"
+---
 q: "a man's a man"
 search_scope: "title"
+metric: "precision"
+metric_at: 3
+relevant:
+  - "b12411226"
+  - "b16761751"
+  - "b20009609"  
+reason: "initial target"
+---
+q: "title = \"a man's a man\""
+search_scope: "cql"
 metric: "precision"
 metric_at: 3
 relevant:
@@ -175,6 +244,14 @@ reason: "initial target"
 notes:
   - "We would like to see the NYPL copy first"
 ---
+q: title = "beginnings of jewishness"
+search_scope: cql
+metric: "precision"
+metric_at: 2
+relevant:
+  - "b15264124"
+  - "cb2167369"
+---
 q: "a mom's life"
 search_scope: "title"
 metric: "recall"
@@ -185,6 +262,16 @@ relevant:
   - "b16542290"
   - "b16649091"
 reason: "initial target"
+---
+q: title = "a mom's life"
+search_scope: cql
+metric: "recall"
+metric_at: 4
+relevant:
+  - "b16556599"
+  - "b19927929"
+  - "b16542290"
+  - "b16649091"
 ---
 q: "new york times"
 search_scope: "all"
@@ -204,6 +291,23 @@ relevant:
   - "b21148114"
 reason: "initial target"
 ---
+q: title = "new york times"
+search_scope: cql
+metric: "recall"
+metric_at: 50
+relevant:
+  - "pb996266843506421"
+  - "b12639440"
+  - "b21835201"
+  - "b12403270"
+  - "b21941401"
+  - "cb524908"
+  - "b21148115"
+  - "b21168678"
+  - "b21148447"
+  - "b11801637"
+  - "b21148114"
+---
 q: "wired"
 search_scope: "all"
 metric: "recall"
@@ -220,7 +324,22 @@ relevant:
   - "b21884998"
 reason: "initial target"
 ---
-q: "\u0022In memory of memory\u0022"
+q: title = "wired"
+search_scope: cql
+metric: "recall"
+metric_at: 10
+relevant:
+  - "b22965079"
+  - "b22214385"
+  - "b21937839"
+  - "b17218096"
+  - "b22160964"
+  - "pb999474273506421"
+  - "b11686313"
+  - "b11514515"
+  - "b21884998"
+---
+q: \u0022In memory of memory\u0022
 search_scope: "title"
 metric: "precision"
 metric_at: 1
@@ -230,7 +349,14 @@ reason: "initial target"
 notes:
   - "Title search with quotes"
 ---
-q: "\u0022In memory of memory\u0022"
+q: title = "In memory of memory"
+search_scope: cql
+metric: "precision"
+metric_at: 1
+relevant:
+  - "b22405724"
+---
+q: \u0022In memory of memory\u0022
 search_scope: "all"
 metric: "precision"
 metric_at: 1
@@ -239,6 +365,13 @@ relevant:
 reason: "initial target"
 notes:
   - "Keyword search with quotes should do as well as title search"
+---
+q: keyword = "In memory of memory"
+search_scope: cql
+metric: "precision"
+metric_at: 1
+relevant:
+  - "b22405724"
 ---
 q: "\u0022in cold blood\u0022"
 search_scope: "title"
@@ -250,6 +383,14 @@ relevant:
 reason: "initial target"
 notes:
   - "Search with quotes"
+---
+q: title = "in cold blood"
+search_scope: cql
+metric: "precision"
+metric_at: 2
+relevant:
+  - "b11064010"
+  - "b21582147"  
 ---
 q: "the shroud of christ"
 search_scope: "title"
@@ -264,6 +405,16 @@ reason: "initial target"
 notes:
   - "Search with quotes"
 ---
+q: title = "the shroud of christ"
+search_scope: cql
+metric: "precision"
+metric_at: 4
+relevant:
+  - "b11095468"
+  - "cb4692334"
+  - "pb9912673913506421"
+  - "b23193131"
+---
 q: "kosovsky otsar ha-leshon"
 search_scope: "all"
 metric: "recall"
@@ -277,8 +428,28 @@ reason: "initial target"
 notes:
   - "Prioritize onsite"
 ---
+q: keyword all "kosovsky otsar ha-leshon"
+search_scope: cql
+metric: "recall"
+metric_at: 10
+relevant:
+  - "b14258861"
+  - "b14258864"
+  - "b11904261"
+  - "b14197265"
+---
 q: "encyclopedia of jewish diaspora"
 search_scope: "all"
+metric: "precision"
+metric_at: 1
+relevant:
+  - "b22180471"
+reason: "initial target"
+notes:
+  - "Prioritize onsite"
+---
+q: keyword all "encyclopedia of jewish diaspora"
+search_scope: cql
 metric: "precision"
 metric_at: 1
 relevant:
@@ -296,6 +467,13 @@ relevant:
 reason: "initial target"
 notes:
   - "Exact barcode"
+---
+q: keyword all "33433135877482"
+search_scope: cql
+metric: "precision"
+metric_at: 1
+relevant:
+  - "b22935532"
 ---
 q: "Vinipeg"
 search_scope: "all"
@@ -531,6 +709,157 @@ notes:
   - DBR0001164
 relevant:
   - b16576913
+metric: recall
+metric_at: 1
+---
+q: title == "wifredo lam and the international avant garde"
+search_scope: cql
+relevant:
+  - b15428422
+  - b15022536
+metric: recall
+metric_at: 2
+---
+q: title adj "wifredo lam and the international avant garde"
+search_scope: cql
+notes:
+  - Working version of test above.
+relevant:
+  - b15428422
+  - b15022536
+metric: recall
+metric_at: 2
+---
+q: keyword == "Artists' Books Collection (NYPL, Print Collection)" NOT genre == "Artists' books – United States – 20th century."
+search_scope: cql 
+relevant:
+  - cb17709400
+metric: recall
+metric_at: 2
+---
+q: keyword any "In Praise of Shadows Tanizaki"
+search_scope: cql 
+relevant:
+  - b11498572
+metric: recall
+metric_at: 2
+---
+q: title adj "In Praise of Shadows" AND author = "Tanizaki"
+search_scope: cql 
+relevant:
+  - b11498572
+metric: recall
+metric_at: 2
+---
+q: keyword all "frankenstein lackington 1818"
+search_scope: cql 
+relevant:
+  - b10901609
+  - b20151143
+  - b13399796
+  - hb990131006230203941
+metric: recall
+metric_at: 4
+---
+q: title = "Frankenstein" AND keyword = "Lackington" AND date == "1818"
+search_scope: cql 
+relevant:
+  - b20151143
+  - b13399796
+metric: recall
+metric_at: 2
+---
+q: title = "Frankenstein" AND keyword = "Lackington" AND date = "1818"
+search_scope: cql 
+notes:
+  - Same as above, but with date = instead of date ==
+relevant:
+  - b20151143
+  - b13399796
+metric: recall
+metric_at: 2
+---
+q: keyword all "machine age in America wilson"
+search_scope: cql 
+relevant:
+  - b11000530
+  - b19270044
+  - pb993396963506421
+  - hb990087939560203941
+metric: recall
+metric_at: 4
+---
+q: title adj "machine age in America" AND author = "wilson"
+search_scope: cql 
+relevant:
+  - b11000530
+  - b19270044
+  - pb993396963506421
+  - hb990087939560203941
+metric: recall
+metric_at: 4
+---
+q: keyword all "anis kabul"
+search_scope: cql 
+relevant:
+  - b10832381
+  - hb990145034730203941
+  - cb11381160
+metric: recall
+metric_at: 3
+---
+q: keyword any "columbus the story of a city lentz"
+search_scope: cql 
+relevant:
+  - b16576913
+  - pb99109562773506421
+metric: recall
+metric_at: 2
+---
+q: title adj "columbus the story of a city" AND author = "lentz"
+search_scope: cql 
+relevant:
+  - b16576913
+  - pb99109562773506421
+metric: recall
+metric_at: 2
+---
+q: keyword all "columbus the story of a city lentz"
+search_scope: cql 
+relevant:
+  - b16576913
+  - pb99109562773506421
+metric: recall
+metric_at: 2
+---
+q: callnumber = "MGZMD 529" AND keyword = "graham"
+search_scope: cql 
+relevant:
+  - b22063335
+metric: recall
+metric_at: 1
+---
+q: keyword adj "jurassic pterosaur"
+search_scope: cql 
+relevant:
+  - b18100608
+metric: recall
+metric_at: 1
+---
+q: author = "Meillassoux, Quentin" AND date >= "2011"
+search_scope: cql 
+relevant:
+  - b20993646
+  - hb990143887970203941
+  - b20084997
+  - b19332523
+metric: recall
+metric_at: 4
+---
+q: author = "Meillassoux, Quentin" AND date < "2011"
+search_scope: cql 
+relevant:
+  - b16336894
 metric: recall
 metric_at: 1
 ---

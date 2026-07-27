@@ -5,6 +5,9 @@ from nypl_py_utils.functions.log_helper import create_log
 
 logger = create_log("S3")
 
+blue = "blue"
+red = "red"
+
 
 def create_graph(labels, scores, elapsed, key, **kwargs):
     """
@@ -26,8 +29,6 @@ def create_graph(labels, scores, elapsed, key, **kwargs):
     if not os.path.exists(path) or kwargs.get("rebuild", False):
         logger.info(f"  Creating figure: {path}")
 
-        blue = "blue"
-        red = "red"
         orange = "orange"
         if kwargs.get("palette") is not None:
             blue = kwargs["palette"]["blue"]
@@ -36,7 +37,7 @@ def create_graph(labels, scores, elapsed, key, **kwargs):
 
         x_ticks = [ind + 1 for ind, v in enumerate(scores)]
         fig, ax = plt.subplots(figsize=(5, 1.5), layout="constrained")
-        ax.plot(x_ticks, scores, color=blue)
+        ax.plot(x_ticks, scores, color=blue, marker="o", markersize=3)
         ax.plot(x_ticks, elapsed, color=red, linestyle="dashed")
         if "counts" in kwargs:
             ax.plot(x_ticks, kwargs["counts"], color=orange, linestyle="dashed")

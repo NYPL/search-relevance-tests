@@ -17,6 +17,7 @@ class Run:
         self.logger = create_log(__name__)
 
         self.app_config = kwargs["app_config"]
+        print(f'App config: {self.app_config}')
         self.base_dir = kwargs.get("base_dir", self.app_config.local_temp_path("app"))
         self.commit_id = kwargs.get("commit_id", self.get_commit_id())
         self.previous_commit_id = kwargs.get("previous_commit_id", None)
@@ -520,4 +521,5 @@ class Run:
             create_log(__name__).info(
                 f"Loaded run: {manifest_paths[ind]} - {run.commit_date} - {len(run.responses)} responses"
             )
+
         return runs

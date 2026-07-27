@@ -30,14 +30,18 @@ class AppConfig:
                 raise AppConfigException(f"Error fetching {self.app_name}/targets.yaml")
 
             with open(path) as f:
-                self._config = yaml.safe_load_all(f)
+                self._config = next(yaml.safe_load_all(f))
         return self._config
 
     def load_targets(self, **kwargs):
-        try:
-            path = local_application_file(self.app_name, "targets.yaml")
-        except Exception:
-            raise AppConfigException(f"Error fetching {self.app_name}/targets.yaml")
+        if kwargs.get('local_targets') is not None:
+            path = kwargs['local_targets']
+
+        else:
+            try:
+                path = local_application_file(self.app_name, "targets.yaml")
+            except Exception:
+                raise AppConfigException(f"Error fetching {self.app_name}/targets.yaml")
 
         self.targets = SearchTarget.load_all_from(path)
 
