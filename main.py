@@ -240,7 +240,6 @@ def rebuild_report(**kwargs):
     if kwargs.get("include_latest", False):
         default_folder_name = "report-latest"
     folder_name = kwargs.get("folder_name", default_folder_name)
-    print(f'local? {kwargs.get('local_targets')}')
 
     report.build(
         rebuild_graphs=kwargs.get("rebuild_graphs", True),
