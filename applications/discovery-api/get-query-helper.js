@@ -16,7 +16,7 @@ params.search_scope = {
   journal_title: 'title'
 }[params.search_scope] || params.search_scope
 
-// Generate query via buildElasticQuery, which may be defined in on or another
+// Generate query via buildElasticQuery, which may be defined in one or another
 // place depending on version of code:
 const _priv = {}
 require('./lib/resources.js')({}, _priv)

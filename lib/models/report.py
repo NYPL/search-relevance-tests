@@ -108,8 +108,6 @@ class Report:
         ]
         targets_with_runs = [r for r in targets_with_runs if len(r["results"]) > 0]
 
-        # runs = [result.run for result in targets_with_runs[0]["results"]]
-
         for target_runs in targets_with_runs:
             runs = [result.run for result in target_runs["results"]]
             app_versions = [run.app_version() for run in runs]

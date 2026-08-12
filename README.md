@@ -35,6 +35,8 @@ To rebuild the report for a named application using saved manifests:
 python main.py APPLICATION rebuild-report
 ```
 
+Both commands optionally take a `--local_targets targets.yaml` command to run tests and build a report based on a local copy of a targets file (useful for quick local testing).
+
 ### Building candidate relevancy reports for local changes
 
 To run tests for a named, local application (for example to assess changes under development) use the `test-local` command. This allows you to build a candidate relevancy report based on a local app, even for code that is not yet committed, and optionally publish the resulting report.
