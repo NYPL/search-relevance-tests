@@ -48,8 +48,6 @@ def parse_args():
     parser.add_argument(
         "--no-rebuild-graphs", dest="rebuild_graphs", action="store_false"
     )
-    parser.add_argument("--include-local", dest="include_local", action="store_true")
-    parser.add_argument("--include-latest", dest="include_latest", action="store_true")
     parser.add_argument("--rebuild", action="store_true")
     parser.add_argument("--publish", action="store_true")
     parser.add_argument("--rows")
@@ -57,8 +55,6 @@ def parse_args():
     parser.add_argument("--appdir")
     parser.add_argument("--description")
     parser.add_argument("-v", "--verbose", action="store_true")
-
-    parser.add_argument("--event-file", dest="event_file")
 
     return parser.parse_args()
 

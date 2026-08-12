@@ -27,7 +27,7 @@ class AppConfig:
             try:
                 path = local_application_file(self.app_name, "config.yaml")
             except Exception:
-                raise AppConfigException(f"Error fetching {self.app_name}/targets.yaml")
+                raise AppConfigException(f"Error fetching {self.app_name}/config.yaml")
 
             with open(path) as f:
                 self._config = next(yaml.safe_load_all(f))
