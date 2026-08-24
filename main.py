@@ -56,6 +56,10 @@ def parse_args():
     parser.add_argument("--description")
     parser.add_argument("-v", "--verbose", action="store_true")
 
+    parser.add_argument("--event-file", dest="event_file")
+    parser.add_argument("--include-local", dest="include_local", action="store_true")
+    parser.add_argument("--include-latest", dest="include_latest", action="store_true")
+
     return parser.parse_args()
 
 
