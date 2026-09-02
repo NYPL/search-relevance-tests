@@ -323,6 +323,7 @@ if len(sys.argv) > 0 and "main.py" in sys.argv[0]:
                 include_local=True,
                 rebuild_graphs=args.rebuild_graphs,
                 folder_name=folder_name,
+                local_targets=args.local_targets
             )
             shell_exec("open", report_url)
 
