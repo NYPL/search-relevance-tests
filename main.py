@@ -126,7 +126,7 @@ def lambda_handler(event, context):
 def run_test_local(**kwargs):
     app_config = AppConfig.for_name(kwargs["app"])
 
-    app_config.load_targets(rows=kwargs.get("rows", None))
+    app_config.load_targets(rows=kwargs.get("rows", None), local_targets=kwargs.get("local_targets", None))
 
     if kwargs["appdir"] is None:
         logger.error("--appdir PATH required")
@@ -299,6 +299,7 @@ if len(sys.argv) > 0 and "main.py" in sys.argv[0]:
                 rows=rows,
                 appdir=args.appdir,
                 description=args.description,
+                local_targets=args.local_targets
             )
 
             app_config = AppConfig.for_name(args.app)
