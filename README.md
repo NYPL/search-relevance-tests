@@ -35,6 +35,16 @@ To rebuild the report for a named application using saved manifests:
 python main.py APPLICATION rebuild-report
 ```
 
+Common arguments:
+
+ - `--local_targets FILE` - Tells script to operate on a local copy of a targets file (useful for quick local testing).
+ - `--rebuild` - Tells script to disregard prior runs when running tests and always re-run them even if no tests appear to have changed.
+ - `--publish` - Tells script to publish the report to S3. User is prompted for path.
+ - `--rows ROWS` - Indicate what row numbers to run tests for
+ - `--envfile FILE` - Indicates .env file to use
+ - `--appdir DIR` - Specify local directory where local discovery-api lives. Only relevant for `test-local` command.
+ - `--description DESC` - Specify description of the changes being tested in `--appdir`. Only relevant for `test-local` command.
+
 ### Building candidate relevancy reports for local changes
 
 To run tests for a named, local application (for example to assess changes under development) use the `test-local` command. This allows you to build a candidate relevancy report based on a local app, even for code that is not yet committed, and optionally publish the resulting report.

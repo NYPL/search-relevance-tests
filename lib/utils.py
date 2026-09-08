@@ -36,6 +36,9 @@ def shell_exec(*_args, **kwargs):
 
 
 def average_by_index(two_d_array):
+    if len(two_d_array) == 0:
+        return None
+
     sums = two_d_array[0]
     for a in two_d_array[1:]:
         for ind, v in enumerate(a):
@@ -58,11 +61,15 @@ def local_application_file(app, path):
         f"/applications/{app}/{path}"
     )
     logger.debug(f"Loading {path} from {url}")
-    download_file(
-        url,
-        local_path,
-    )
-    return local_path
+    try:
+        download_file(
+            url,
+            local_path,
+        )
+        return local_path
+    except Exception as e:
+        print(f'Error retrieving {url}: {e}')
+        raise e
 
 
 def download_file(url, local_path):

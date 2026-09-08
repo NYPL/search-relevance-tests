@@ -1,6 +1,7 @@
 import argparse
 import json
 import os
+import re
 import sys
 import traceback
 
@@ -40,15 +41,13 @@ def parse_args():
             "lambda-event",
         ],
     )
-    parser.add_argument("-t", "--targets", default="targets.yaml")
+    parser.add_argument("-t", "--local-targets")
     parser.add_argument(
         "--no-persist-to-s3", dest="persist_to_s3", action="store_false"
     )
     parser.add_argument(
         "--no-rebuild-graphs", dest="rebuild_graphs", action="store_false"
     )
-    parser.add_argument("--include-local", dest="include_local", action="store_true")
-    parser.add_argument("--include-latest", dest="include_latest", action="store_true")
     parser.add_argument("--rebuild", action="store_true")
     parser.add_argument("--publish", action="store_true")
     parser.add_argument("--rows")
@@ -58,6 +57,8 @@ def parse_args():
     parser.add_argument("-v", "--verbose", action="store_true")
 
     parser.add_argument("--event-file", dest="event_file")
+    parser.add_argument("--include-local", dest="include_local", action="store_true")
+    parser.add_argument("--include-latest", dest="include_latest", action="store_true")
 
     return parser.parse_args()
 
@@ -125,7 +126,7 @@ def lambda_handler(event, context):
 def run_test_local(**kwargs):
     app_config = AppConfig.for_name(kwargs["app"])
 
-    app_config.load_targets(rows=kwargs.get("rows", None))
+    app_config.load_targets(rows=kwargs.get("rows", None), local_targets=kwargs.get("local_targets", None))
 
     if kwargs["appdir"] is None:
         logger.error("--appdir PATH required")
@@ -146,6 +147,8 @@ def run_test_all(**kwargs):
     app_config = AppConfig.for_name(kwargs["app"])
     app_config.load_targets(rows=kwargs.get("rows", None))
 
+    Run.retrieve_manifests(app_config)
+
     runs = [
         Run.for_commit(app_config, c["commit"], c["description"])
         for c in app_config.official_commits()
@@ -163,7 +166,7 @@ def run_test_all(**kwargs):
 
 def run_test_latest(**kwargs):
     app_config = AppConfig.for_name(kwargs["app"])
-    app_config.load_targets(rows=kwargs.get("rows", None))
+    app_config.load_targets(rows=kwargs.get("rows", None), local_targets=kwargs.get("local_targets", None))
 
     log = []
 
@@ -172,7 +175,8 @@ def run_test_latest(**kwargs):
         def log_progress(message, done=False):
             logger.info(message)
             log.append(message)
-            upload_pending_report(f"{app_config.app_name}/report-latest", log, done)
+            if kwargs.get("persist_to_s3", True):
+                upload_pending_report(f"{app_config.app_name}/report-latest", log, done)
 
         checkout_base_dir = app_config.local_temp_path("app")
         last_run = Run.all_from_manifests(app_config)[-1]
@@ -212,6 +216,7 @@ def run_test_latest(**kwargs):
                 rebuild_graphs=kwargs.get("rebuild_graphs", True),
                 persist_to_s3=kwargs.get("persist_to_s3", True),
                 folder_name="report-latest",
+                local_targets=kwargs.get("local_targets", None)
             )
     except Exception as e:
         log_progress(f"Error: {str(e)}", True)
@@ -242,6 +247,7 @@ def rebuild_report(**kwargs):
         folder_name=folder_name,
         include_local=kwargs.get("include_local"),
         include_latest=kwargs.get("include_latest"),
+        local_targets=kwargs.get("local_targets", None),
     )
 
 
@@ -256,10 +262,31 @@ def build_application_versions(**kwargs):
         run.package_app()
 
 
+def check_environment():
+    output = shell_exec("node", "--version")
+    major_version = None
+    try:
+        major_version = int(re.sub(r"^v", "", output).split(".")[0])
+    except Exception as e:
+        logger.error(f"Failed to identify local node version from '{output}': {e}")
+        exit()
+    if major_version < 18:
+        logger.error(
+            f"Found local node version {major_version}. Require at least Node 18"
+        )
+        exit()
+
+    logger.info(
+        f"Confirmed minimum Node version: Local default verion is {major_version}"
+    )
+
+
 # Detect invocation via CLI versus in a Lambda environment.
 # If filename is other than main.py, must be Lambda environment:
 if len(sys.argv) > 0 and "main.py" in sys.argv[0]:
     args = parse_args()
+
+    check_environment()
 
     if args.app and args.command:
         rows = None
@@ -272,6 +299,7 @@ if len(sys.argv) > 0 and "main.py" in sys.argv[0]:
                 rows=rows,
                 appdir=args.appdir,
                 description=args.description,
+                local_targets=args.local_targets
             )
 
             app_config = AppConfig.for_name(args.app)
@@ -295,6 +323,7 @@ if len(sys.argv) > 0 and "main.py" in sys.argv[0]:
                 include_local=True,
                 rebuild_graphs=args.rebuild_graphs,
                 folder_name=folder_name,
+                local_targets=args.local_targets
             )
             shell_exec("open", report_url)
 
@@ -306,6 +335,7 @@ if len(sys.argv) > 0 and "main.py" in sys.argv[0]:
                 rows=rows,
                 rebuild_graphs=args.rebuild_graphs,
                 persist_to_s3=args.persist_to_s3,
+                local_targets=args.local_targets
             )
         if args.command == "rebuild-report":
             rebuild_report(
@@ -314,6 +344,7 @@ if len(sys.argv) > 0 and "main.py" in sys.argv[0]:
                 rebuild_graphs=args.rebuild_graphs,
                 include_local=args.include_local,
                 include_latest=args.include_latest,
+                local_targets=args.local_targets,
             )
         if args.command == "build":
             build_application_versions(app=args.app)

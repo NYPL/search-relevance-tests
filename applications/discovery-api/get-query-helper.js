@@ -16,10 +16,12 @@ params.search_scope = {
   journal_title: 'title'
 }[params.search_scope] || params.search_scope
 
-// Generate query via buildElasticQuery:
+// Generate query via buildElasticQuery, which may be defined in one or another
+// place depending on version of code:
 const _priv = {}
 require('./lib/resources.js')({}, _priv)
-const query = _priv.buildElasticQuery(params)
+const { buildElasticQuery } = require('./lib/elasticsearch/elastic-body-builder')
+const query = _priv.buildElasticQuery ? _priv.buildElasticQuery(params) : buildElasticQuery(params)
 
 // Add filters:
 if (filters.length) {

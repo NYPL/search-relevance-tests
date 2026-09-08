@@ -82,6 +82,8 @@ class Report:
         self.runs = Run.all_from_manifests(
             self.app_config, include_local=include_local, include_latest=include_latest
         )
+        if len(self.runs) == 0:
+            self.logger.warn('Load runs from manifests loaded 0 runs')
         return self.runs
 
     def build(self, folder_name="report", **kwargs):
@@ -92,8 +94,10 @@ class Report:
 
         os.makedirs(f"{basedir}/graphs", exist_ok=True)
 
-        targets = self.app_config.load_targets()
+        targets = self.app_config.load_targets(local_targets=kwargs.get("local_targets", None))
 
+        if len(self.runs) == 0:
+            self.logger.warn('No runs found.')
         targets_with_runs = [
             {
                 "target": target,
@@ -104,19 +108,17 @@ class Report:
         ]
         targets_with_runs = [r for r in targets_with_runs if len(r["results"]) > 0]
 
-        runs = [result.run for result in targets_with_runs[0]["results"]]
-        app_versions = [run.app_version() for run in runs]
-
         for target_runs in targets_with_runs:
+            runs = [result.run for result in target_runs["results"]]
+            app_versions = [run.app_version() for run in runs]
+
             results = target_runs["results"]
             target = target_runs["target"]
-            if len(results) == 0:
-                continue
 
             scores, elapsed, elapsed_relative, counts = normalize_run_data(results)
-            if len(scores) != len(self.runs):
+            if len(app_versions) != len(scores):
                 self.logger.error(
-                    f"\nFound error in manifests: Expected {len(self.runs)} scores for target {target};"
+                    f"\nFound error in manifests: Expected {len(app_versions)} scores for target {target};"
                     f"Found {len(scores)}. Exiting"
                 )
                 exit(1)
@@ -133,9 +135,10 @@ class Report:
             )
 
         overall_scores, overall_elapsed, overall_elapsed_relative = (
-            normalize_overall_run_data(t["results"] for t in targets_with_runs)
+            normalize_overall_run_data(t["results"] for t in targets_with_runs if len(t["results"]))
         )
 
+        app_versions = [run.app_version() for run in self.runs]
         create_graph(
             app_versions,
             overall_scores,
@@ -145,7 +148,6 @@ class Report:
             palette=palette,
             rebuild=kwargs.get("rebuild_graphs", False),
         )
-
         run_summary = [
             {
                 "run": run,
@@ -154,6 +156,7 @@ class Report:
             }
             for ind, run in enumerate(runs)
         ]
+
         renderer = pystache.Renderer(search_dirs="./templates")
 
         official_report_url = "https://research-catalog-stats.s3.amazonaws.com/srt/discovery-api/report/index.html"

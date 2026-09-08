@@ -27,17 +27,21 @@ class AppConfig:
             try:
                 path = local_application_file(self.app_name, "config.yaml")
             except Exception:
-                raise AppConfigException(f"Error fetching {self.app_name}/targets.yaml")
+                raise AppConfigException(f"Error fetching {self.app_name}/config.yaml")
 
             with open(path) as f:
-                self._config = yaml.safe_load_all(f)
+                self._config = next(yaml.safe_load_all(f))
         return self._config
 
     def load_targets(self, **kwargs):
-        try:
-            path = local_application_file(self.app_name, "targets.yaml")
-        except Exception:
-            raise AppConfigException(f"Error fetching {self.app_name}/targets.yaml")
+        if kwargs.get('local_targets') is not None:
+            path = kwargs['local_targets']
+
+        else:
+            try:
+                path = local_application_file(self.app_name, "targets.yaml")
+            except Exception:
+                raise AppConfigException(f"Error fetching {self.app_name}/targets.yaml")
 
         self.targets = SearchTarget.load_all_from(path)
 
@@ -55,7 +59,7 @@ class AppConfig:
     def local_temp_path(self, folder=None):
         basedir = os.path.join(os.sep, "tmp", "srt", self.app_name)
         if folder is not None:
-            return os.path.join(basedir, folder)
+            basedir = os.path.join(basedir, folder)
         os.makedirs(basedir, exist_ok=True)
         return basedir
 

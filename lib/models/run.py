@@ -14,6 +14,8 @@ from nypl_py_utils.functions.log_helper import create_log
 
 class Run:
     def __init__(self, **kwargs):
+        self.logger = create_log(__name__)
+
         self.app_config = kwargs["app_config"]
         self.base_dir = kwargs.get("base_dir", self.app_config.local_temp_path("app"))
         self.commit_id = kwargs.get("commit_id", self.get_commit_id())
@@ -26,8 +28,6 @@ class Run:
 
         self.created_date = datetime.now()
         self.responses = []
-
-        self.logger = create_log(__name__)
 
     def change_url(self):
         if self.previous_commit_id is None:
@@ -53,6 +53,10 @@ class Run:
         return f"V{ind + 1}"
 
     def get_commit_id(self):
+        if not os.path.exists(os.path.join(self.base_dir, ".git")):
+            self.logger.debug("Initializing app in order to look up commit_id")
+            self.initialize_app()
+
         s = shell_exec("git", "-C", self.base_dir, "show", "-s", "--format=%H")
         self.commit_id = s
         return self.commit_id
@@ -183,7 +187,7 @@ class Run:
 
     def initialize_app(self, use_cache=True, commit_id=None):
         if commit_id is None:
-            commit_id = self.commit_id
+            commit_id = self.app_config.config().get("branch", "main")
 
         package_path = os.path.join(
             self.app_config.local_config_path(), "builds", f"{commit_id}.zip"
@@ -466,9 +470,14 @@ class Run:
         return None
 
     @staticmethod
-    def all_from_manifests(app_config, include_local=False, include_latest=False):
+    def retrieve_manifests(app_config):
         directory = app_config.local_temp_path("manifests")
         download_dir(f"srt/{app_config.app_name}/manifests", directory)
+
+    @staticmethod
+    def all_from_manifests(app_config, include_local=False, include_latest=False):
+        directory = app_config.local_temp_path("manifests")
+        Run.retrieve_manifests(app_config)
 
         commits = app_config.official_commits()
 
@@ -511,4 +520,5 @@ class Run:
             create_log(__name__).info(
                 f"Loaded run: {manifest_paths[ind]} - {run.commit_date} - {len(run.responses)} responses"
             )
+
         return runs

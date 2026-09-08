@@ -54,6 +54,9 @@ def normalize_overall_run_data(results):
         all_scores.append(scores)
         all_elapsed.append(elapsed)
 
+    if len(all_scores) == 0:
+        return None, None, None
+
     overall_scores = average_by_index(all_scores)
     overall_elapsed = average_by_index(all_elapsed)
     max_elapsed = max([avg_elapsed for avg_elapsed in overall_elapsed])
